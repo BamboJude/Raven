@@ -197,6 +197,55 @@ export const teamAPI = {
       method: "PATCH",
       body: JSON.stringify(data),
     }, token),
+};
+
+// Dashboard API types
+export interface DashboardStats {
+  conversations_today: number;
+  active_conversations: number;
+  appointments_today: number;
+  satisfaction_rate: number | null;
+  total_conversations: number;
+}
+
+export interface ActivityItem {
+  type: "conversation" | "appointment" | "rating";
+  message: string;
+  timestamp: string;
+  channel?: string;
+  rating?: string;
+}
+
+export interface ChartDataPoint {
+  date: string;
+  count: number;
+  label: string;
+}
+
+export interface UpcomingAppointment {
+  id: string;
+  customer_name: string;
+  customer_email: string;
+  customer_phone: string | null;
+  appointment_date: string;
+  appointment_time: string;
+  service_type: string | null;
+  status: string;
+}
+
+// Dashboard API
+export const dashboardAPI = {
+  getStats: (businessId: string, token: string): Promise<DashboardStats> =>
+    fetchAPI(`/api/dashboard/businesses/${businessId}/dashboard/stats?user_id=${token}`, {}, token),
+
+  getActivity: (businessId: string, token: string, limit = 10): Promise<ActivityItem[]> =>
+    fetchAPI(`/api/dashboard/businesses/${businessId}/dashboard/activity?user_id=${token}&limit=${limit}`, {}, token),
+
+  getChartData: (businessId: string, token: string, days = 7): Promise<ChartDataPoint[]> =>
+    fetchAPI(`/api/dashboard/businesses/${businessId}/dashboard/chart-data?user_id=${token}&days=${days}`, {}, token),
+
+  getUpcomingAppointments: (businessId: string, token: string, days = 3): Promise<UpcomingAppointment[]> =>
+    fetchAPI(`/api/dashboard/businesses/${businessId}/dashboard/upcoming-appointments?user_id=${token}&days=${days}`, {}, token),
 
   remove: (businessId: string, memberId: string, token: string) =>
     fetchAPI(`/api/team/${businessId}/members/${memberId}`, {

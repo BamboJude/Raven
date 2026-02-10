@@ -186,6 +186,12 @@ export default function DashboardPage() {
                   </span>
                 </div>
                 <div className="flex gap-2 mb-3">
+                  <Link
+                    href={`/dashboard/overview?id=${business.id}`}
+                    className="btn-primary text-sm flex-1 text-center"
+                  >
+                    {lang === "fr" ? "Vue d'ensemble" : "Overview"}
+                  </Link>
                   {(!business.is_system || isAdmin) && (
                     <Link
                       href={`/dashboard/setup?id=${business.id}`}
@@ -196,7 +202,7 @@ export default function DashboardPage() {
                   )}
                   <Link
                     href={`/dashboard/widget?id=${business.id}`}
-                    className="btn-primary text-sm flex-1 text-center"
+                    className="btn-secondary text-sm flex-1 text-center"
                   >
                     {t.dashboard.widget}
                   </Link>

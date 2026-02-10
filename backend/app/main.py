@@ -12,7 +12,7 @@ from fastapi.staticfiles import StaticFiles
 from pathlib import Path
 
 from app.config import get_settings
-from app.api import health, chat, business, whatsapp, analytics, export, team, uploads, appointments, notifications, live
+from app.api import health, chat, business, whatsapp, analytics, export, team, uploads, appointments, notifications, live, dashboard
 from app.services.scheduler import start_scheduler, stop_scheduler
 
 settings = get_settings()
@@ -49,6 +49,7 @@ app.add_middleware(
 # Include routers
 app.include_router(health.router, tags=["Health"])
 app.include_router(business.router, prefix="/api/businesses", tags=["Businesses"])
+app.include_router(dashboard.router, prefix="/api/dashboard", tags=["Dashboard"])
 app.include_router(chat.router, prefix="/api/chat", tags=["Chat"])
 app.include_router(whatsapp.router, prefix="/api/whatsapp", tags=["WhatsApp"])
 app.include_router(analytics.router, prefix="/api/analytics", tags=["Analytics"])
