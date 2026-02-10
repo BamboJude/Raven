@@ -59,7 +59,16 @@ export default function OverviewPage() {
         setUpcomingAppointments(appointmentsData);
       } catch (error) {
         console.error("Failed to load dashboard data:", error);
-        setError(error instanceof Error ? error.message : "Failed to load dashboard data");
+        // Extract detailed error message
+        let errorMessage = "Failed to load dashboard data";
+        if (error instanceof Error) {
+          errorMessage = error.message;
+        } else if (typeof error === 'object' && error !== null) {
+          errorMessage = JSON.stringify(error, null, 2);
+        } else if (typeof error === 'string') {
+          errorMessage = error;
+        }
+        setError(errorMessage);
       } finally {
         setLoading(false);
       }

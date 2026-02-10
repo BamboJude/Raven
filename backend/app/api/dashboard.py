@@ -45,7 +45,7 @@ async def get_dashboard_stats(business_id: str, authorization: Optional[str] = H
     today_end = datetime.combine(today, datetime.max.time()).replace(tzinfo=timezone.utc)
 
     # Get today's conversations
-    all_conversations = db.supabase.table("conversations")\
+    all_conversations = db.client.table("conversations")\
         .select("*")\
         .eq("business_id", business_id)\
         .gte("started_at", today_start.isoformat())\
@@ -56,7 +56,7 @@ async def get_dashboard_stats(business_id: str, authorization: Optional[str] = H
 
     # Get active conversations (last message within last hour)
     one_hour_ago = datetime.now(timezone.utc) - timedelta(hours=1)
-    active_conversations = db.supabase.table("conversations")\
+    active_conversations = db.client.table("conversations")\
         .select("id")\
         .eq("business_id", business_id)\
         .gte("last_message_at", one_hour_ago.isoformat())\
@@ -65,7 +65,7 @@ async def get_dashboard_stats(business_id: str, authorization: Optional[str] = H
     active_now = len(active_conversations.data) if active_conversations.data else 0
 
     # Get today's appointments
-    appointments = db.supabase.table("appointments")\
+    appointments = db.client.table("appointments")\
         .select("id")\
         .eq("business_id", business_id)\
         .eq("appointment_date", today.isoformat())\
@@ -75,7 +75,7 @@ async def get_dashboard_stats(business_id: str, authorization: Optional[str] = H
 
     # Get average rating (last 30 days)
     thirty_days_ago = datetime.now(timezone.utc) - timedelta(days=30)
-    rated_conversations = db.supabase.table("conversations")\
+    rated_conversations = db.client.table("conversations")\
         .select("rating")\
         .eq("business_id", business_id)\
         .not_.is_("rating", "null")\
@@ -89,7 +89,7 @@ async def get_dashboard_stats(business_id: str, authorization: Optional[str] = H
         avg_rating = round((positive_count / total_ratings) * 100) if total_ratings > 0 else None
 
     # Get total conversations (all time)
-    total_convos = db.supabase.table("conversations")\
+    total_convos = db.client.table("conversations")\
         .select("id", count="exact")\
         .eq("business_id", business_id)\
         .execute()
@@ -124,7 +124,7 @@ async def get_activity_feed(business_id: str, limit: int = 10, authorization: Op
 
     # Get recent conversations (last 24 hours)
     yesterday = datetime.now(timezone.utc) - timedelta(days=1)
-    recent_conversations = db.supabase.table("conversations")\
+    recent_conversations = db.client.table("conversations")\
         .select("id, visitor_name, started_at, channel")\
         .eq("business_id", business_id)\
         .gte("started_at", yesterday.isoformat())\
@@ -141,7 +141,7 @@ async def get_activity_feed(business_id: str, limit: int = 10, authorization: Op
         })
 
     # Get recent appointments
-    recent_appointments = db.supabase.table("appointments")\
+    recent_appointments = db.client.table("appointments")\
         .select("id, customer_name, appointment_date, appointment_time, created_at")\
         .eq("business_id", business_id)\
         .gte("created_at", yesterday.isoformat())\
@@ -157,7 +157,7 @@ async def get_activity_feed(business_id: str, limit: int = 10, authorization: Op
         })
 
     # Get recent ratings
-    recent_ratings = db.supabase.table("conversations")\
+    recent_ratings = db.client.table("conversations")\
         .select("id, visitor_name, rating, rated_at")\
         .eq("business_id", business_id)\
         .not_.is_("rating", "null")\
@@ -199,7 +199,7 @@ async def get_chart_data(business_id: str, days: int = 7, authorization: Optiona
     start_date = datetime.now(timezone.utc).date() - timedelta(days=days - 1)
     end_date = datetime.now(timezone.utc).date()
 
-    conversations = db.supabase.table("conversations")\
+    conversations = db.client.table("conversations")\
         .select("started_at")\
         .eq("business_id", business_id)\
         .gte("started_at", datetime.combine(start_date, datetime.min.time()).replace(tzinfo=timezone.utc).isoformat())\
@@ -248,7 +248,7 @@ async def get_upcoming_appointments(business_id: str, days: int = 3, authorizati
     today = datetime.now(timezone.utc).date()
     end_date = today + timedelta(days=days)
 
-    appointments = db.supabase.table("appointments")\
+    appointments = db.client.table("appointments")\
         .select("*")\
         .eq("business_id", business_id)\
         .gte("appointment_date", today.isoformat())\
