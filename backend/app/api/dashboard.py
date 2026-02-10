@@ -3,24 +3,41 @@ Dashboard API endpoints.
 Provides overview statistics and metrics for the business dashboard.
 """
 
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, Header
 from datetime import datetime, timezone, timedelta
 from typing import Optional
 
 from app.services.database import db
+from app.services.admin import is_platform_admin
 
 router = APIRouter()
 
 
+def get_user_id_from_header(authorization: Optional[str] = Header(None)) -> str:
+    """Extract user ID from authorization header."""
+    if not authorization:
+        raise HTTPException(status_code=401, detail="Authorization header required")
+
+    parts = authorization.split(" ")
+    if len(parts) != 2 or parts[0] != "Bearer":
+        raise HTTPException(status_code=401, detail="Invalid authorization format")
+
+    return parts[1]
+
+
 @router.get("/businesses/{business_id}/dashboard/stats")
-async def get_dashboard_stats(business_id: str, user_id: str):
+async def get_dashboard_stats(business_id: str, authorization: Optional[str] = Header(None)):
     """
     Get today's dashboard statistics for a business.
     Returns key metrics like conversation count, appointments, ratings, etc.
     """
+    user_id = get_user_id_from_header(authorization)
+
     # Verify business ownership
     business = db.get_business(business_id)
-    if not business or business["user_id"] != user_id:
+    if not business:
+        raise HTTPException(status_code=404, detail="Business not found")
+    if business["user_id"] != user_id and not is_platform_admin(user_id):
         raise HTTPException(status_code=403, detail="Not authorized")
 
     today = datetime.now(timezone.utc).date()
@@ -89,14 +106,18 @@ async def get_dashboard_stats(business_id: str, user_id: str):
 
 
 @router.get("/businesses/{business_id}/dashboard/activity")
-async def get_activity_feed(business_id: str, user_id: str, limit: int = 10):
+async def get_activity_feed(business_id: str, limit: int = 10, authorization: Optional[str] = Header(None)):
     """
     Get recent activity feed (last N events).
     Returns a list of recent events like new conversations, appointments, ratings.
     """
+    user_id = get_user_id_from_header(authorization)
+
     # Verify business ownership
     business = db.get_business(business_id)
-    if not business or business["user_id"] != user_id:
+    if not business:
+        raise HTTPException(status_code=404, detail="Business not found")
+    if business["user_id"] != user_id and not is_platform_admin(user_id):
         raise HTTPException(status_code=403, detail="Not authorized")
 
     activities = []
@@ -160,14 +181,18 @@ async def get_activity_feed(business_id: str, user_id: str, limit: int = 10):
 
 
 @router.get("/businesses/{business_id}/dashboard/chart-data")
-async def get_chart_data(business_id: str, user_id: str, days: int = 7):
+async def get_chart_data(business_id: str, days: int = 7, authorization: Optional[str] = Header(None)):
     """
     Get conversation data for the last N days for charting.
     Returns daily conversation counts.
     """
+    user_id = get_user_id_from_header(authorization)
+
     # Verify business ownership
     business = db.get_business(business_id)
-    if not business or business["user_id"] != user_id:
+    if not business:
+        raise HTTPException(status_code=404, detail="Business not found")
+    if business["user_id"] != user_id and not is_platform_admin(user_id):
         raise HTTPException(status_code=403, detail="Not authorized")
 
     # Get conversations from last N days
@@ -207,13 +232,17 @@ async def get_chart_data(business_id: str, user_id: str, days: int = 7):
 
 
 @router.get("/businesses/{business_id}/dashboard/upcoming-appointments")
-async def get_upcoming_appointments(business_id: str, user_id: str, days: int = 3):
+async def get_upcoming_appointments(business_id: str, days: int = 3, authorization: Optional[str] = Header(None)):
     """
     Get upcoming appointments for the next N days.
     """
+    user_id = get_user_id_from_header(authorization)
+
     # Verify business ownership
     business = db.get_business(business_id)
-    if not business or business["user_id"] != user_id:
+    if not business:
+        raise HTTPException(status_code=404, detail="Business not found")
+    if business["user_id"] != user_id and not is_platform_admin(user_id):
         raise HTTPException(status_code=403, detail="Not authorized")
 
     today = datetime.now(timezone.utc).date()

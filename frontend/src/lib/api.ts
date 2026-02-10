@@ -236,16 +236,16 @@ export interface UpcomingAppointment {
 // Dashboard API
 export const dashboardAPI = {
   getStats: (businessId: string, token: string): Promise<DashboardStats> =>
-    fetchAPI(`/api/dashboard/businesses/${businessId}/dashboard/stats?user_id=${token}`, {}, token),
+    fetchAPI(`/api/dashboard/businesses/${businessId}/dashboard/stats`, {}, token),
 
   getActivity: (businessId: string, token: string, limit = 10): Promise<ActivityItem[]> =>
-    fetchAPI(`/api/dashboard/businesses/${businessId}/dashboard/activity?user_id=${token}&limit=${limit}`, {}, token),
+    fetchAPI(`/api/dashboard/businesses/${businessId}/dashboard/activity?limit=${limit}`, {}, token),
 
   getChartData: (businessId: string, token: string, days = 7): Promise<ChartDataPoint[]> =>
-    fetchAPI(`/api/dashboard/businesses/${businessId}/dashboard/chart-data?user_id=${token}&days=${days}`, {}, token),
+    fetchAPI(`/api/dashboard/businesses/${businessId}/dashboard/chart-data?days=${days}`, {}, token),
 
   getUpcomingAppointments: (businessId: string, token: string, days = 3): Promise<UpcomingAppointment[]> =>
-    fetchAPI(`/api/dashboard/businesses/${businessId}/dashboard/upcoming-appointments?user_id=${token}&days=${days}`, {}, token),
+    fetchAPI(`/api/dashboard/businesses/${businessId}/dashboard/upcoming-appointments?days=${days}`, {}, token),
 
   remove: (businessId: string, memberId: string, token: string) =>
     fetchAPI(`/api/team/${businessId}/members/${memberId}`, {
