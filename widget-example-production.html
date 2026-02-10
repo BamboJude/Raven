@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Raven Widget - Production Example</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 800px;
+      margin: 50px auto;
+      padding: 20px;
+      background: #f5f5f5;
+    }
+    .card {
+      background: white;
+      padding: 30px;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    h1 {
+      color: #333;
+      margin-top: 0;
+    }
+    code {
+      background: #f4f4f4;
+      padding: 2px 6px;
+      border-radius: 3px;
+      font-family: 'Courier New', monospace;
+    }
+    .note {
+      background: #fff3cd;
+      padding: 15px;
+      border-left: 4px solid #ffc107;
+      margin: 20px 0;
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1>Raven Widget - Production</h1>
+    <p>This page demonstrates the Raven chat widget using the production API.</p>
+
+    <div class="note">
+      <strong>Configuration:</strong><br>
+      API URL: <code>https://raven-production-980b.up.railway.app</code><br>
+      Business ID: <code>YOUR_BUSINESS_ID</code>
+    </div>
+
+    <h2>How to embed on your site:</h2>
+    <ol>
+      <li>Get your Business ID from the Raven dashboard</li>
+      <li>Copy the script code below</li>
+      <li>Paste it before the closing <code>&lt;/body&gt;</code> tag on your website</li>
+    </ol>
+
+    <pre style="background: #f4f4f4; padding: 15px; border-radius: 5px; overflow-x: auto;"><code>&lt;!-- Raven Chat Widget --&gt;
+&lt;script&gt;
+  window.RAVEN_CONFIG = {
+    businessId: 'YOUR_BUSINESS_ID',
+    apiUrl: 'https://raven-production-980b.up.railway.app'
+  };
+&lt;/script&gt;
+&lt;script src="https://raven-production-980b.up.railway.app/static/raven-widget.js"&gt;&lt;/script&gt;</code></pre>
+
+    <h2>Test Widget</h2>
+    <p>The widget should appear in the bottom-right corner of this page.</p>
+  </div>
+
+  <!-- Raven Chat Widget -->
+  <script>
+    window.RAVEN_CONFIG = {
+      businessId: 'YOUR_BUSINESS_ID', // Replace with actual business ID
+      apiUrl: 'https://raven-production-980b.up.railway.app'
+    };
+  </script>
+  <!--
+    Note: Update the script src below once widget is deployed to Railway
+    For now, this will 404 until you copy the built widget to backend/static/
+  -->
+  <script src="https://raven-production-980b.up.railway.app/static/raven-widget.js"></script>
+</body>
+</html>

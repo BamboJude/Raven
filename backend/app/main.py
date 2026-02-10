@@ -40,7 +40,7 @@ app = FastAPI(
 # Configure CORS to allow frontend and widget to make requests
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=settings.cors_origins + ["*"],  # Allow all for widget embeds
+    allow_origins=["*"],  # Allow all origins for widget embeds (public API)
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],

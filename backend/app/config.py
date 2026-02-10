@@ -34,10 +34,22 @@ class Settings(BaseSettings):
     platform_admin_email: str = "bambojude@gmail.com"
 
     # CORS - allowed origins for the frontend and widget
+    # Can be overridden with CORS_ORIGINS env var (comma-separated)
     cors_origins: list[str] = [
         "http://localhost:3000",  # Next.js dev server
         "http://127.0.0.1:3000",
+        "https://raven-production-980b.up.railway.app",  # Production backend (for local dev access)
     ]
+
+    @property
+    def all_cors_origins(self) -> list[str]:
+        """Get all CORS origins including environment variable overrides."""
+        import os
+        env_origins = os.getenv("CORS_ORIGINS", "")
+        if env_origins:
+            additional = [o.strip() for o in env_origins.split(",") if o.strip()]
+            return self.cors_origins + additional
+        return self.cors_origins
 
     class Config:
         env_file = ".env"
