@@ -31,27 +31,27 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-primary-50 to-white">
       {/* Header */}
-      <header className="container mx-auto px-4 py-6">
+      <header className="container mx-auto px-4 py-4 sm:py-6">
         <nav className="flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <div className="w-10 h-10 bg-primary-600 rounded-lg flex items-center justify-center">
-              <span className="text-white font-bold text-xl">R</span>
+            <div className="w-8 h-8 sm:w-10 sm:h-10 bg-primary-600 rounded-lg flex items-center justify-center">
+              <span className="text-white font-bold text-lg sm:text-xl">R</span>
             </div>
-            <span className="text-2xl font-bold text-gray-900">Raven Support</span>
+            <span className="text-lg sm:text-2xl font-bold text-gray-900">Raven Support</span>
           </div>
 
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-2 sm:gap-4">
             <LanguageToggle />
             {isLoggedIn ? (
-              <Link href="/dashboard" className="btn-primary">
+              <Link href="/dashboard" className="btn-primary text-sm sm:text-base px-3 sm:px-4 py-2">
                 {t.nav.dashboard}
               </Link>
             ) : (
               <>
-                <Link href="/auth/login" className="link">
+                <Link href="/auth/login" className="link text-sm sm:text-base">
                   {t.nav.login}
                 </Link>
-                <Link href="/auth/signup" className="btn-primary">
+                <Link href="/auth/signup" className="btn-primary text-sm sm:text-base px-3 sm:px-4 py-2 whitespace-nowrap">
                   {t.nav.signup}
                 </Link>
               </>
@@ -61,22 +61,22 @@ export default function Home() {
       </header>
 
       {/* Hero Section */}
-      <main className="container mx-auto px-4 py-20">
+      <main className="container mx-auto px-4 py-12 sm:py-20">
         <div className="max-w-3xl mx-auto text-center">
-          <h1 className="text-5xl font-bold text-gray-900 mb-6">
+          <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-gray-900 mb-4 sm:mb-6 leading-tight">
             {t.landing.title}
           </h1>
-          <p className="text-xl text-gray-600 mb-8">
+          <p className="text-base sm:text-lg md:text-xl text-gray-600 mb-6 sm:mb-8 px-4">
             {t.landing.subtitle}
           </p>
 
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Link href="/auth/signup" className="btn-primary text-lg px-8 py-3">
+          <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center px-4">
+            <Link href="/auth/signup" className="btn-primary text-base sm:text-lg px-6 sm:px-8 py-3 w-full sm:w-auto">
               {t.landing.tryFree}
             </Link>
             <Link
               href="#features"
-              className="btn-secondary text-lg px-8 py-3"
+              className="btn-secondary text-base sm:text-lg px-6 sm:px-8 py-3 w-full sm:w-auto"
             >
               {t.landing.learnMore}
             </Link>
@@ -84,12 +84,12 @@ export default function Home() {
         </div>
 
         {/* Features */}
-        <section id="features" className="mt-32">
-          <h2 className="text-3xl font-bold text-center text-gray-900 mb-12">
+        <section id="features" className="mt-16 sm:mt-24 md:mt-32">
+          <h2 className="text-2xl sm:text-3xl font-bold text-center text-gray-900 mb-8 sm:mb-12 px-4">
             {t.landing.whyChoose}
           </h2>
 
-          <div className="grid md:grid-cols-3 gap-8">
+          <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-6 sm:gap-8">
             <div className="card text-center">
               <div className="w-14 h-14 bg-primary-100 rounded-xl flex items-center justify-center mx-auto mb-4">
                 <svg
@@ -106,8 +106,8 @@ export default function Home() {
                   />
                 </svg>
               </div>
-              <h3 className="text-xl font-semibold mb-2">{t.landing.feature1Title}</h3>
-              <p className="text-gray-600">
+              <h3 className="text-lg sm:text-xl font-semibold mb-2">{t.landing.feature1Title}</h3>
+              <p className="text-sm sm:text-base text-gray-600">
                 {t.landing.feature1Desc}
               </p>
             </div>
@@ -128,8 +128,8 @@ export default function Home() {
                   />
                 </svg>
               </div>
-              <h3 className="text-xl font-semibold mb-2">{t.landing.feature2Title}</h3>
-              <p className="text-gray-600">
+              <h3 className="text-lg sm:text-xl font-semibold mb-2">{t.landing.feature2Title}</h3>
+              <p className="text-sm sm:text-base text-gray-600">
                 {t.landing.feature2Desc}
               </p>
             </div>
@@ -150,8 +150,8 @@ export default function Home() {
                   />
                 </svg>
               </div>
-              <h3 className="text-xl font-semibold mb-2">{t.landing.feature3Title}</h3>
-              <p className="text-gray-600">
+              <h3 className="text-lg sm:text-xl font-semibold mb-2">{t.landing.feature3Title}</h3>
+              <p className="text-sm sm:text-base text-gray-600">
                 {t.landing.feature3Desc}
               </p>
             </div>
@@ -159,14 +159,14 @@ export default function Home() {
         </section>
 
         {/* Pricing teaser */}
-        <section className="mt-32 text-center">
-          <h2 className="text-3xl font-bold text-gray-900 mb-4">
+        <section className="mt-16 sm:mt-24 md:mt-32 text-center px-4">
+          <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-4">
             {t.landing.pricing}
           </h2>
-          <p className="text-xl text-gray-600 mb-8">
+          <p className="text-lg sm:text-xl text-gray-600 mb-6 sm:mb-8">
             {t.landing.priceFrom} <span className="font-bold text-primary-600">10,000 CFA/mois</span>
           </p>
-          <Link href="/auth/signup" className="btn-primary text-lg px-8 py-3">
+          <Link href="/auth/signup" className="btn-primary text-base sm:text-lg px-6 sm:px-8 py-3 inline-block">
             {t.landing.startNow}
           </Link>
         </section>
