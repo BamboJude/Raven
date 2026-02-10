@@ -1,198 +1,331 @@
-# Raven - AI Chatbot Platform
+# Raven Support - AI Chatbot Platform
 
-Raven est une plateforme de chatbot IA pour les entreprises au Cameroun et en Afrique francophone. Permettez a vos clients de poser des questions 24h/24 via votre site web ou WhatsApp.
+Raven Support is an AI-powered chatbot platform designed for businesses in Cameroon and francophone Africa. It enables business owners to embed an intelligent chat widget on their website, providing 24/7 customer support powered by AI.
 
-## Stack Technique
+## 🌟 Features
 
-- **Backend**: Python/FastAPI
-- **Frontend**: Next.js (TypeScript)
+- **AI-Powered Chat**: Intelligent conversations using Groq's Llama 3 model
+- **Appointment Booking**: Automated appointment scheduling with calendar integration
+- **Multi-Language Support**: French and English with automatic language detection
+- **Image Upload & Vision**: Support for image uploads with AI vision analysis (Llama 4 Scout)
+- **Live Agent Handoff**: Seamless transition from AI to human agents
+- **WhatsApp Integration**: Connect customer conversations via WhatsApp
+- **Business Dashboard**: Manage conversations, appointments, and analytics
+- **Team Management**: Invite team members with role-based access
+- **Email & SMS Notifications**: Automated reminders and confirmations
+- **Mobile Responsive**: Optimized for both desktop and mobile devices
+- **Easy Widget Integration**: Simple JavaScript snippet to embed on any website
+
+## 🏗️ Architecture
+
+### Tech Stack
+
+- **Backend**: FastAPI (Python 3.10+)
+- **Frontend**: Next.js 14 + TypeScript
+- **Widget**: TypeScript + Vite (standalone bundle)
 - **Database**: Supabase (PostgreSQL)
-- **AI**: Claude API (Anthropic)
-- **Widget**: TypeScript/Vite
+- **AI**: Groq API (Llama 3.3 70B + Llama 4 Scout for vision)
+- **Notifications**: Resend (Email), Twilio (SMS/WhatsApp)
+- **Deployment**: Railway (Backend), Vercel (Frontend)
 
-## Structure du Projet
+### Project Structure
 
 ```
 raven/
-├── backend/          # API FastAPI
-├── frontend/         # Dashboard Next.js
-├── widget/           # Widget de chat embeddable
-└── supabase/         # Migrations SQL
+├── backend/               # FastAPI backend
+│   ├── app/
+│   │   ├── api/          # API route modules
+│   │   ├── services/     # Business logic (AI, database, notifications)
+│   │   ├── models/       # Pydantic schemas
+│   │   ├── main.py       # FastAPI application
+│   │   └── config.py     # Environment configuration
+│   ├── migrations/       # Database migrations
+│   └── uploads/          # User-uploaded files
+├── frontend/             # Next.js dashboard
+│   └── src/
+│       ├── app/          # Next.js app directory
+│       ├── components/   # React components
+│       └── lib/          # API client, utilities
+├── widget/               # Embeddable chat widget
+│   ├── src/
+│   │   ├── index.ts      # Widget UI and DOM manipulation
+│   │   ├── chat.ts       # API communication
+│   │   └── styles.ts     # Widget CSS
+│   └── dist/             # Built widget bundle
+└── supabase/
+    └── migrations/       # Supabase database migrations
 ```
 
-## Installation
+## 🚀 Getting Started
 
 ### Prerequisites
 
-- Python 3.10+
 - Node.js 18+
-- Un compte Supabase
-- Une cle API Anthropic (Claude)
+- Python 3.10+
+- Supabase account
+- Groq API key (free tier available)
 
-### 1. Configuration Supabase
+### Backend Setup
 
-1. Creez un projet sur [supabase.com](https://supabase.com)
-2. Allez dans SQL Editor et executez le fichier `supabase/migrations/001_initial_schema.sql`
-3. Notez votre Project URL et Anon Key (dans Settings > API)
+1. **Install dependencies:**
+   ```bash
+   cd backend
+   pip install -r requirements.txt
+   ```
 
-### 2. Configuration Backend
+2. **Configure environment variables:**
+   Create a `.env` file in the `backend` directory:
+   ```env
+   # Database
+   SUPABASE_URL=your_supabase_url
+   SUPABASE_KEY=your_supabase_service_role_key
 
-```bash
-cd backend
+   # AI
+   GROQ_API_KEY=your_groq_api_key
 
-# Creer un environnement virtuel
-python -m venv venv
-source venv/bin/activate  # Sur Windows: venv\Scripts\activate
+   # Notifications
+   RESEND_API_KEY=your_resend_api_key
+   RESEND_FROM_EMAIL=noreply@yourdomain.com
 
-# Installer les dependances
-pip install -r requirements.txt
+   TWILIO_ACCOUNT_SID=your_twilio_account_sid
+   TWILIO_AUTH_TOKEN=your_twilio_auth_token
+   TWILIO_WHATSAPP_NUMBER=whatsapp:+14155238886
 
-# Configurer les variables d'environnement
-cp .env.example .env
-# Editez .env avec vos cles Supabase et Anthropic
+   # Optional
+   DEBUG=true
+   ```
 
-# Demarrer le serveur
-uvicorn app.main:app --reload
+3. **Run the backend:**
+   ```bash
+   uvicorn app.main:app --reload --port 8000
+   ```
+
+   The API will be available at `http://localhost:8000`
+
+### Frontend Setup
+
+1. **Install dependencies:**
+   ```bash
+   cd frontend
+   npm install
+   ```
+
+2. **Configure environment variables:**
+   Create a `.env.local` file in the `frontend` directory:
+   ```env
+   NEXT_PUBLIC_SUPABASE_URL=your_supabase_url
+   NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
+   NEXT_PUBLIC_API_URL=http://localhost:8000
+   ```
+
+3. **Run the frontend:**
+   ```bash
+   npm run dev
+   ```
+
+   The dashboard will be available at `http://localhost:3000`
+
+### Widget Setup
+
+1. **Install dependencies:**
+   ```bash
+   cd widget
+   npm install
+   ```
+
+2. **Build the widget:**
+   ```bash
+   npm run build
+   ```
+
+3. **Copy to backend static directory:**
+   ```bash
+   mkdir -p ../backend/static
+   cp dist/raven-widget.js ../backend/static/
+   ```
+
+4. **Embed on your website:**
+   ```html
+   <script>
+     window.RAVEN_CONFIG = {
+       businessId: 'YOUR_BUSINESS_ID',
+       apiUrl: 'https://your-backend-url.com'
+     };
+   </script>
+   <script src="https://your-backend-url.com/static/raven-widget.js"></script>
+   ```
+
+## 📚 Key Features Explained
+
+### Appointment Booking
+
+The AI automatically detects appointment booking intent and guides users through the process:
+
+1. **Intent Detection**: Recognizes booking requests in both French and English
+2. **Slot Selection**: Presents available time slots as clickable buttons
+3. **Information Collection**: Gathers customer name and email
+4. **Automatic Creation**: Creates appointment when all required info is provided
+5. **Notifications**: Sends email confirmation and reminders (24h and 1h before)
+
+### Human Takeover
+
+Business owners can take over conversations from the AI:
+
+1. Navigate to the Live Conversations dashboard
+2. Click "Take Over" on any active conversation
+3. Send messages directly to the customer
+4. AI is paused while in takeover mode
+5. Click "Return to AI" to hand back to the bot
+
+### Multi-Language Support
+
+- **Auto-Detection**: Automatically detects user's browser language
+- **Business Language**: Set primary language per business
+- **Widget Customization**: Choose auto, French, or English for welcome message
+- **Bilingual Intent**: AI recognizes appointment requests in both languages
+
+## 🔧 Configuration
+
+### Business Settings
+
+Configure your business through the dashboard at `/dashboard/setup`:
+
+- Business name and description
+- Welcome messages (French & English)
+- FAQs (Frequently Asked Questions)
+- Products/Services catalog
+- Custom AI instructions
+- Widget appearance (color, position)
+- Business hours and availability
+- Away messages
+
+### Widget Customization
+
+```javascript
+window.RAVEN_CONFIG = {
+  businessId: 'your-business-id',
+  apiUrl: 'https://your-api-url.com',
+  // Optional customizations are set via dashboard
+};
 ```
 
-Le backend sera disponible sur http://localhost:8000
+## 📊 Database Schema
 
-### 3. Configuration Frontend
+Key tables:
 
-```bash
-cd frontend
+- **businesses**: Business accounts
+- **business_configs**: Business settings and AI configuration
+- **conversations**: Customer conversation sessions
+- **messages**: Individual chat messages (with media support)
+- **appointments**: Scheduled appointments
+- **business_availability**: Weekly schedule for bookings
+- **team_members**: Team access and roles
+- **notification_settings**: Notification preferences
+- **notification_log**: Notification history
 
-# Installer les dependances
-npm install
+## 🚢 Deployment
 
-# Configurer les variables d'environnement
-cp .env.local.example .env.local
-# Editez .env.local avec vos cles Supabase
+### Backend (Railway)
 
-# Demarrer le serveur de developpement
-npm run dev
-```
+1. Connect your GitHub repository to Railway
+2. Set environment variables in Railway dashboard
+3. Railway will automatically detect `railway.json` and deploy
+4. Widget will be served from `/static/raven-widget.js`
 
-Le dashboard sera disponible sur http://localhost:3000
-
-### 4. Configuration Widget
-
-```bash
-cd widget
-
-# Installer les dependances
-npm install
-
-# Demarrer le serveur de developpement
-npm run dev
-```
-
-Pour tester le widget, ouvrez `widget/test.html` dans votre navigateur apres avoir remplace `YOUR_BUSINESS_ID` par un ID valide.
-
-## Utilisation
-
-### Pour les Business Owners
-
-1. Creez un compte sur http://localhost:3000/auth/signup
-2. Configurez votre entreprise (nom, description, FAQs, produits)
-3. Copiez le code du widget depuis le dashboard
-4. Integrez le widget sur votre site web
-
-### Integration du Widget
-
-Ajoutez ce code juste avant `</body>` sur votre site:
-
-```html
-<script>
-  window.RAVEN_CONFIG = {
-    businessId: "VOTRE_ID_ENTREPRISE",
-    apiUrl: "https://api.raven.cm"  // URL de production
-  };
-</script>
-<script src="https://cdn.raven.cm/widget.js" async></script>
-```
-
-## API Endpoints
-
-### Public (Widget)
-
-- `GET /api/chat/business/{id}/public` - Info publique d'une entreprise
-- `POST /api/chat` - Envoyer un message
-
-### Protected (Dashboard)
-
-- `GET /api/businesses` - Lister ses entreprises
-- `POST /api/businesses` - Creer une entreprise
-- `GET /api/businesses/{id}` - Details d'une entreprise
-- `PUT /api/businesses/{id}/config` - Mettre a jour la config
-
-## Variables d'Environnement
-
-### Backend (.env)
-
-```
-SUPABASE_URL=https://your-project.supabase.co
-SUPABASE_KEY=your-anon-key
-ANTHROPIC_API_KEY=sk-ant-your-key
-DEBUG=true
-```
-
-### Frontend (.env.local)
-
-```
-NEXT_PUBLIC_SUPABASE_URL=https://your-project.supabase.co
-NEXT_PUBLIC_SUPABASE_ANON_KEY=your-anon-key
-NEXT_PUBLIC_API_URL=http://localhost:8000
-```
-
-## Deploiement
-
-### Backend (Railway/Render)
-
-1. Connectez votre repo GitHub
-2. Configurez les variables d'environnement
-3. Deployez avec `uvicorn app.main:app --host 0.0.0.0 --port $PORT`
+Production URL: `https://raven-production-980b.up.railway.app`
 
 ### Frontend (Vercel)
 
-1. Connectez votre repo GitHub
-2. Configurez les variables d'environnement
-3. Deployez automatiquement
+1. Connect your GitHub repository to Vercel
+2. Set root directory to `frontend`
+3. Add environment variables
+4. Deploy
 
-### Widget
+### Widget Build & Deploy
 
-Buildez le widget et hebergez sur un CDN:
+After making widget changes:
 
 ```bash
 cd widget
 npm run build
-# Le fichier dist/raven-widget.js peut etre heberge sur n'importe quel CDN
+cp dist/raven-widget.js ../backend/static/
+git add ../backend/static/raven-widget.js
+git commit -m "Update widget"
+git push  # Railway will auto-deploy
 ```
 
-## Roadmap
+## 🔒 Security
 
-### Phase 1 (MVP) ✅
-- [x] Backend FastAPI
-- [x] Integration Claude
-- [x] Dashboard Next.js
-- [x] Widget embeddable
-- [x] Authentification Supabase
+- **Supabase RLS**: Row-level security policies (backend uses service_role key)
+- **User Authentication**: Supabase Auth for dashboard access
+- **CORS**: Configured to allow widget embedding on any domain
+- **Input Validation**: Pydantic models validate all API inputs
+- **No Credentials in Widget**: Widget uses public business IDs only
 
-### Phase 2
-- [ ] Integration WhatsApp Business API
-- [ ] Prise de rendez-vous
-- [ ] Capture de leads
-- [ ] Export des donnees
+## 📈 Scalability & Costs
 
-### Phase 3
-- [ ] Paiements Mobile Money (MTN MoMo, Orange Money)
-- [ ] Comptes multi-utilisateurs
-- [ ] Analytics avances
+### Current Capacity (Free Tier)
 
-## Support
+- **Groq**: 30 requests/minute (plenty for most SMBs)
+- **Supabase**: 500MB database, 2GB bandwidth/month
+- **Railway**: 500 hours/month ($5 credit)
+- **Vercel**: 100GB bandwidth/month
 
-Pour toute question ou probleme, ouvrez une issue sur GitHub.
+### Estimated Cost at Scale
+
+For 1,000 chats/month:
+- Groq: Free (within limits)
+- Supabase: $25/month (beyond free tier)
+- Railway: $10-15/month
+- Total: ~$40/month
+
+## 🤝 Contributing
+
+This is a production project for businesses in Cameroon. Key development practices:
+
+1. **Test Locally**: Always test changes with both frontend and widget
+2. **Database Migrations**: Use numbered migrations in both `supabase/migrations` and `backend/migrations`
+3. **Code Quality**: Remove debug prints before committing
+4. **Documentation**: Update README and inline comments for complex logic
+
+## 📝 License
+
+Proprietary - All rights reserved
+
+## 🐛 Known Issues & Limitations
+
+- **Email Sandbox**: Resend is in sandbox mode (only sends to verified owner email). Need domain verification for production.
+- **No Real-time Push**: Live conversations dashboard polls every 5 seconds (no WebSocket/SSE yet)
+- **Mobile Money**: Payment integration planned for Phase 3
+- **Migration Files**: Split between `supabase/migrations` and `backend/migrations` (needs consolidation)
+
+## 📞 Support
+
+For issues or questions:
+- GitHub Issues: [Create an issue](https://github.com/yourusername/raven/issues)
+- Email: jude.afanyu@gmail.com
+
+## 🎯 Roadmap
+
+### Phase 1: Core Platform ✅
+- [x] AI chat widget
+- [x] Appointment booking
+- [x] Business dashboard
+- [x] Team management
+- [x] Notifications
+
+### Phase 2: Enhancement 🚧
+- [ ] Real-time updates (WebSocket/SSE)
+- [ ] Advanced analytics
+- [ ] Lead capture forms
+- [ ] Email domain verification
+
+### Phase 3: Monetization 💰
+- [ ] Mobile Money integration (MTN, Orange Money)
+- [ ] Subscription billing
+- [ ] Premium features
+- [ ] Multi-business accounts
 
 ---
 
-Fait avec ❤️ au Cameroun
+**Built with ❤️ for African businesses**

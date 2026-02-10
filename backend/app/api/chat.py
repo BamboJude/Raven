@@ -3,6 +3,7 @@ Chat API endpoints.
 Handles chat interactions between customers and the AI chatbot.
 """
 
+import re
 from fastapi import APIRouter, HTTPException
 from datetime import datetime, timezone, timedelta
 
@@ -194,10 +195,6 @@ async def send_message(request: ChatRequest):
         for m in messages
     ]
 
-    # Check conversation length
-    message_count = len(message_history)
-    print(f"💬 Message count in conversation: {message_count}")
-
     # Check if user wants to end the conversation
     # Only match these as standalone responses, not as part of longer sentences
     closing_keywords_fr = ["non merci", "rien d'autre", "c'est tout", "au revoir", "merci c'est tout"]
@@ -220,13 +217,11 @@ async def send_message(request: ChatRequest):
     available_slots = []
     if has_appointments:
         available_slots = get_available_slots_for_chat(request.business_id, days=5)
-        print(f"📅 Found {len(available_slots)} available slots")
 
     # Generate AI response (or closing message if user wants to end)
     try:
         if is_closing:
             # User wants to end conversation - send friendly closing message
-            print(f"👋 User wants to close conversation")
             if business["language"] == "fr":
                 ai_response = "Merci d'avoir contacté " + business["name"] + " ! N'hésitez pas à revenir si vous avez besoin d'aide. À bientôt ! 👋"
             else:
@@ -238,12 +233,7 @@ async def send_message(request: ChatRequest):
                 has_appointments=has_appointments,
                 available_slots=available_slots,
             )
-            # DEBUG: Log the actual AI response
-            print(f"🤖 AI Response: {ai_response}")
-            print(f"🤖 Response length: {len(ai_response) if ai_response else 0}")
-            print(f"🤖 Response type: {type(ai_response)}")
     except Exception as e:
-        # Log the error and return a friendly message
         print(f"AI error: {e}")
         ai_response = "Désolé, je rencontre un problème technique. Veuillez réessayer ou contacter l'entreprise directement."
 
@@ -261,7 +251,6 @@ async def send_message(request: ChatRequest):
         if get_ai_service().detect_appointment_intent(request.message, business["language"]):
             appointment_intent = True
             is_fresh_booking_request = True
-            print(f"🆕 Fresh booking request detected in current message")
         else:
             # Check last 4 messages for prior booking intent (conversation context)
             for m in message_history[-4:]:
@@ -276,7 +265,6 @@ async def send_message(request: ChatRequest):
         if is_fresh_booking_request:
             # Current message is the fresh request - extract from messages AFTER this
             booking_flow_start_index = len(message_history)  # Start from next message (none yet)
-            print(f"🔄 Fresh booking request - will extract from subsequent messages only")
         else:
             # Find the most recent message with appointment intent in last 4 messages
             # This marks the start of the current booking flow
@@ -284,14 +272,12 @@ async def send_message(request: ChatRequest):
                 msg = message_history[i]
                 if msg["role"] == "user" and get_ai_service().detect_appointment_intent(msg["content"], business["language"]):
                     booking_flow_start_index = i + 1  # Extract from messages AFTER the request
-                    print(f"🔍 Found booking flow start at message index {i}, extracting from index {booking_flow_start_index}")
                     break
 
         # Extract only from messages in the current booking flow (after the request)
         booking_flow_messages = message_history[booking_flow_start_index:] if booking_flow_start_index < len(message_history) else []
 
         if booking_flow_messages:
-            print(f"📋 Extracting from {len(booking_flow_messages)} messages in current booking flow")
             appointment_info = get_ai_service().extract_appointment_info(booking_flow_messages, available_slots)
         else:
             # No messages yet after the booking request - start empty
@@ -304,19 +290,11 @@ async def send_message(request: ChatRequest):
                 "service": None,
                 "notes": None,
             }
-            print(f"📋 No messages yet in booking flow - starting empty")
-
-        # DEBUG: Log extracted appointment info
-        print(f"🔍 Appointment intent detected")
-        print(f"🔍 Extracted info: {appointment_info}")
-        print(f"🔍 Has all required fields: name={bool(appointment_info.get('name'))}, email={bool(appointment_info.get('email'))}, date={bool(appointment_info.get('date'))}, time={bool(appointment_info.get('time'))}")
 
         # Check if we have minimum required info (name, email, date, time) - phone is optional
         if all([appointment_info.get("name"), appointment_info.get("email"),
                 appointment_info.get("date"), appointment_info.get("time")]):
             try:
-                print(f"✅ Creating appointment with: name={appointment_info['name']}, phone={appointment_info['phone']}, email={appointment_info['email']}, date={appointment_info['date']}, time={appointment_info['time']}")
-
                 # Create the appointment
                 appointment = db.create_appointment(
                     business_id=request.business_id,
@@ -330,8 +308,6 @@ async def send_message(request: ChatRequest):
                     duration_minutes=availability.get("default_duration_minutes", 60) if availability else 60,
                     conversation_id=conversation_id,
                 )
-
-                print(f"✅ Appointment created: {appointment}")
 
                 if appointment:
                     appointment_created = True
@@ -394,7 +370,6 @@ async def send_message(request: ChatRequest):
             for slot in available_slots:
                 if slot["date"] == extracted_date and slot["time"] == extracted_time:
                     slot_selected = True
-                    print(f"🎯 Slot selected matches available slot: {extracted_date} at {extracted_time}")
                     break
 
     # Show slot buttons only if no slot selected and no appointment created
@@ -411,7 +386,6 @@ async def send_message(request: ChatRequest):
 
     # Detect goodbye phrases to close the chat
     # Only close if it's a simple goodbye (short message) or appointment was just confirmed
-    import re
     goodbye_patterns = [
         r"\b(bye|goodbye|au revoir|à bientôt|a bientot|ciao|see you|ok bye|ok thanks)\b",
         r"^(merci|thank you|thanks|merci beaucoup|thanks a lot)[\s!.]*$",  # Only if "thanks" is the entire message
@@ -426,7 +400,6 @@ async def send_message(request: ChatRequest):
             # Only close if: (1) message is short/simple goodbye, OR (2) appointment was just created
             if is_short_message or appointment_created:
                 should_close = True
-                print(f"👋 Goodbye detected in message: '{request.message}'")
                 break
 
     return ChatResponse(

@@ -334,7 +334,6 @@ Règles importantes:
                 if display_en.lower() in conversation_text.lower() or display_fr.lower() in conversation_text.lower():
                     info["date"] = slot["date"]
                     info["time"] = slot["time"]
-                    print(f"🔍 Slot display matched: '{display_en}' → {info['date']} at {info['time']}")
                     slot_selected = True
                     break
 
@@ -371,12 +370,7 @@ Règles importantes:
                             selected_slot = available_slots[slot_num - 1]
                             info["date"] = selected_slot["date"]
                             info["time"] = selected_slot["time"]
-                            print(f"🔍 Slot {slot_num} selected: {info['date']} at {info['time']}")
                             break
-
-        # Debug logging
-        print(f"🔍 Extracting from {len(user_messages)} recent user messages")
-        print(f"🔍 Recent messages: {user_messages}")
 
         # Search from NEWEST to oldest for ALL fields
         email_pattern = r'\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b'
@@ -419,8 +413,6 @@ Règles importantes:
             r",\s*([A-Z][a-z]{2,}),\s*\+?\d{6,}",  # ..., Single Name, phone...
         ]
 
-        print(f"🔍 Looking for name, email, phone in recent messages...")
-
         # Search from newest to oldest
         for msg in reversed(user_messages):
             # Extract email from this message if not found yet
@@ -428,7 +420,6 @@ Règles importantes:
                 email_match = re.search(email_pattern, msg)
                 if email_match:
                     info["email"] = email_match.group()
-                    print(f"🔍 Found email: {info['email']} in message: '{msg[:40]}...'")
 
             # Extract phone from this message if not found yet
             if not info["phone"]:
@@ -440,7 +431,6 @@ Règles importantes:
                             info["phone"] = phone_match.group(1).strip()
                         except IndexError:
                             info["phone"] = phone_match.group().strip()
-                        print(f"🔍 Found phone: {info['phone']} in message: '{msg[:40]}...'")
                         break
 
             # Extract name from this message if not found yet
@@ -449,14 +439,10 @@ Règles importantes:
                     name_match = re.search(pattern, msg, re.IGNORECASE | re.MULTILINE)
                     if name_match:
                         potential_name = name_match.group(1).strip()
-                        print(f"🔍 Found potential name: '{potential_name}' in message: '{msg[:40]}...'")
                         words = potential_name.split()
                         if 1 <= len(words) <= 4 and all('\n' not in w and len(w) >= 2 for w in words):
                             info["name"] = " ".join(word.capitalize() for word in words)
-                            print(f"🔍 Accepted name: '{info['name']}'")
                             break
-                        else:
-                            print(f"🔍 Rejected name: '{potential_name}' (validation failed)")
 
         # Extract date (various formats) - ONLY if not already set by slot selection
         if not info["date"]:
@@ -559,7 +545,6 @@ Règles importantes:
 
                     info["time"] = f"{hour:02d}:00"
 
-        print(f"🔍 Final extracted info: {info}")
         return info
 
     def generate_response(
@@ -660,27 +645,12 @@ Règles importantes:
         # Use vision model if images are present, otherwise use regular model
         selected_model = self.vision_model if has_images else self.model
 
-        # DEBUG: Log what we're sending to Groq
-        print(f"📤 Calling Groq API with model: {selected_model}")
-        print(f"📤 Number of messages: {len(groq_messages)}")
-        print(f"📤 Has images: {has_images}")
-        print(f"📤 System prompt length: {len(system_prompt)} chars")
-        # Print first and last user message to verify context
-        user_msgs = [m for m in groq_messages if m.get('role') == 'user']
-        if user_msgs:
-            print(f"📤 Last user message: {user_msgs[-1].get('content', '')[:100]}")
-
         # Call Groq API
         response = self.client.chat.completions.create(
             model=selected_model,
             max_tokens=500,  # Keep responses concise
             messages=groq_messages,
         )
-
-        # DEBUG: Log what we got back
-        print(f"📥 Response choices: {len(response.choices)}")
-        print(f"📥 Response content: '{response.choices[0].message.content}'")
-        print(f"📥 Finish reason: {response.choices[0].finish_reason}")
 
         # Handle empty responses
         ai_response = response.choices[0].message.content
