@@ -177,42 +177,57 @@ export class RavenChat {
       this.conversationId = this.getSavedConversationId();
     }
 
-    const response = await fetch(`${this.apiUrl}/api/chat`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        business_id: this.businessId,
-        visitor_id: this.visitorId,
-        message: content,
-        conversation_id: this.conversationId,
-        media: media,
-        ...(this.visitorName && !this.conversationId ? { visitor_name: this.visitorName } : {}),
-        ...(this.visitorEmail && !this.conversationId ? { visitor_email: this.visitorEmail } : {}),
-        ...(this.visitorPhone && !this.conversationId ? { visitor_phone: this.visitorPhone } : {}),
-      }),
-    });
+    // Create abort controller for timeout
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 30000); // 30 second timeout
 
-    if (!response.ok) {
-      throw new Error("Failed to send message");
+    try {
+      const response = await fetch(`${this.apiUrl}/api/chat`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          business_id: this.businessId,
+          visitor_id: this.visitorId,
+          message: content,
+          conversation_id: this.conversationId,
+          media: media,
+          ...(this.visitorName && !this.conversationId ? { visitor_name: this.visitorName } : {}),
+          ...(this.visitorEmail && !this.conversationId ? { visitor_email: this.visitorEmail } : {}),
+          ...(this.visitorPhone && !this.conversationId ? { visitor_phone: this.visitorPhone } : {}),
+        }),
+        signal: controller.signal,
+      });
+
+      clearTimeout(timeoutId);
+
+      if (!response.ok) {
+        throw new Error("Failed to send message");
+      }
+
+      const data: ChatResponse = await response.json();
+
+      // Save conversation ID for future messages
+      this.conversationId = data.conversation_id;
+      this.saveConversationId(data.conversation_id);
+
+      // Add assistant message to local messages
+      this.messages.push({ role: "assistant", content: data.message });
+
+      return {
+        message: data.message,
+        isHumanTakeover: data.is_human_takeover || false,
+        availableSlots: data.available_slots,
+        shouldClose: data.should_close || false,
+      };
+    } catch (error) {
+      clearTimeout(timeoutId);
+      if (error instanceof Error && error.name === 'AbortError') {
+        throw new Error("Request timed out - please try again");
+      }
+      throw error;
     }
-
-    const data: ChatResponse = await response.json();
-
-    // Save conversation ID for future messages
-    this.conversationId = data.conversation_id;
-    this.saveConversationId(data.conversation_id);
-
-    // Add assistant message to local messages
-    this.messages.push({ role: "assistant", content: data.message });
-
-    return {
-      message: data.message,
-      isHumanTakeover: data.is_human_takeover || false,
-      availableSlots: data.available_slots,
-      shouldClose: data.should_close || false,
-    };
   }
 
   /**
