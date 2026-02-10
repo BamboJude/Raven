@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Raven Widget - Live Test</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .container {
+      background: white;
+      border-radius: 20px;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+      padding: 60px 40px;
+      max-width: 600px;
+      width: 100%;
+      text-align: center;
+    }
+
+    h1 {
+      font-size: 2.5em;
+      color: #333;
+      margin-bottom: 10px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .subtitle {
+      color: #666;
+      font-size: 1.2em;
+      margin-bottom: 40px;
+    }
+
+    .status {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: #10b981;
+      color: white;
+      padding: 12px 24px;
+      border-radius: 50px;
+      font-weight: 600;
+      margin-bottom: 30px;
+    }
+
+    .status::before {
+      content: '';
+      width: 10px;
+      height: 10px;
+      background: white;
+      border-radius: 50%;
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.5; }
+    }
+
+    .info-box {
+      background: #f8fafc;
+      border-radius: 12px;
+      padding: 24px;
+      margin: 30px 0;
+      text-align: left;
+    }
+
+    .info-box h3 {
+      color: #333;
+      margin-bottom: 16px;
+      font-size: 1.1em;
+    }
+
+    .info-box ol {
+      margin-left: 20px;
+      color: #555;
+      line-height: 1.8;
+    }
+
+    .info-box li {
+      margin-bottom: 8px;
+    }
+
+    .warning {
+      background: #fef3c7;
+      border-left: 4px solid #f59e0b;
+      padding: 16px;
+      border-radius: 8px;
+      margin: 20px 0;
+      text-align: left;
+    }
+
+    .warning strong {
+      color: #f59e0b;
+    }
+
+    code {
+      background: #e5e7eb;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-family: 'Monaco', 'Courier New', monospace;
+      font-size: 0.9em;
+      color: #dc2626;
+    }
+
+    .arrow {
+      font-size: 2em;
+      color: #667eea;
+      margin: 20px 0;
+      animation: bounce 2s infinite;
+    }
+
+    @keyframes bounce {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
+    }
+
+    @media (max-width: 600px) {
+      .container {
+        padding: 40px 20px;
+      }
+
+      h1 {
+        font-size: 1.8em;
+      }
+
+      .subtitle {
+        font-size: 1em;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="status">
+      🚀 Widget is LIVE
+    </div>
+
+    <h1>Raven Widget Test</h1>
+    <p class="subtitle">Your AI chatbot is ready to use!</p>
+
+    <div class="info-box">
+      <h3>✨ What to Do Next:</h3>
+      <ol>
+        <li>Look for the <strong>blue chat button</strong> in the bottom-right corner →</li>
+        <li>Click it to open the chat</li>
+        <li>Try asking: <code>"I want to book an appointment"</code></li>
+        <li>Test the AI responses</li>
+      </ol>
+    </div>
+
+    <div class="warning">
+      <strong>⚠️ Important:</strong> Replace <code>YOUR_BUSINESS_ID_HERE</code> in the code below with your actual Business ID from the dashboard!
+    </div>
+
+    <div class="arrow">↓</div>
+
+    <p style="color: #64748b; font-size: 0.9em;">
+      The chat widget should appear in the bottom-right corner of this page.
+      <br>
+      If you don't see it, check your browser console for errors.
+    </p>
+  </div>
+
+  <!-- Raven Chat Widget -->
+  <script>
+    window.RAVEN_CONFIG = {
+      businessId: 'YOUR_BUSINESS_ID_HERE',  // ⚠️ REPLACE THIS with your actual Business ID
+      apiUrl: 'https://raven-production-980b.up.railway.app'
+    };
+  </script>
+  <script src="https://raven-production-980b.up.railway.app/static/raven-widget.js"></script>
+
+  <!-- Optional: Log when widget loads -->
+  <script>
+    window.addEventListener('load', function() {
+      console.log('✅ Widget script loaded');
+      console.log('🔧 Business ID:', window.RAVEN_CONFIG?.businessId);
+      console.log('🌐 API URL:', window.RAVEN_CONFIG?.apiUrl);
+    });
+  </script>
+</body>
+</html>
