@@ -412,7 +412,9 @@ class RavenWidget {
    */
   open(): void {
     const chatWindow = document.getElementById("raven-chat-window");
+    const chatButton = document.getElementById("raven-chat-button");
     chatWindow?.classList.add("open");
+    chatButton?.classList.add("hidden"); // Hide button when chat is open
     this.isOpen = true;
 
     // Show lead capture form if enabled and not already completed
@@ -429,7 +431,9 @@ class RavenWidget {
    */
   close(): void {
     const chatWindow = document.getElementById("raven-chat-window");
+    const chatButton = document.getElementById("raven-chat-button");
     chatWindow?.classList.remove("open");
+    chatButton?.classList.remove("hidden"); // Show button when chat is closed
     this.isOpen = false;
 
     // End the conversation when closing the widget

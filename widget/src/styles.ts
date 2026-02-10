@@ -76,6 +76,12 @@ export const styles = `
   filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
 }
 
+#raven-chat-button.hidden {
+  opacity: 0;
+  pointer-events: none;
+  transform: scale(0.5);
+}
+
 /* Chat Window - Enhanced */
 #raven-chat-window {
   position: absolute;
