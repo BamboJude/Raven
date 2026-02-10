@@ -27,6 +27,7 @@ export default function OverviewPage() {
   const [chartData, setChartData] = useState<ChartDataPoint[]>([]);
   const [upcomingAppointments, setUpcomingAppointments] = useState<UpcomingAppointment[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const loadData = async () => {
@@ -58,6 +59,7 @@ export default function OverviewPage() {
         setUpcomingAppointments(appointmentsData);
       } catch (error) {
         console.error("Failed to load dashboard data:", error);
+        setError(error instanceof Error ? error.message : "Failed to load dashboard data");
       } finally {
         setLoading(false);
       }
@@ -70,6 +72,23 @@ export default function OverviewPage() {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="spinner h-12 w-12"></div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="max-w-md w-full bg-white rounded-lg shadow p-6">
+          <h2 className="text-xl font-bold text-red-600 mb-2">Error Loading Dashboard</h2>
+          <p className="text-gray-700 mb-4">{error}</p>
+          <button
+            onClick={() => window.location.reload()}
+            className="btn-primary w-full"
+          >
+            {lang === "fr" ? "Réessayer" : "Retry"}
+          </button>
+        </div>
       </div>
     );
   }
