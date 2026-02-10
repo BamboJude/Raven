@@ -403,16 +403,20 @@ Règles importantes:
             # Single name followed by newline and then email/phone (e.g., "Bambo\nemail@example.com")
             rf"^{greeting_blacklist}([a-zA-Z]+(?:\s+[a-zA-Z]+)?)\s*\n\s*[\w.+-]+@",  # Name followed by newline then email (not greeting)
             rf"^{greeting_blacklist}([a-zA-Z]+(?:\s+[a-zA-Z]+)?)\s*\n\s*\+?\d{{6,}}",  # Name followed by newline then phone (not greeting)
-            # Comma-separated names like "Jude Sean, email@example.com" or "Jude Sean, 673377962"
+            # Comma-separated names - TWO WORDS like "Jude Sean, email@example.com"
             # Use negative lookahead to exclude greetings
-            rf"^{greeting_blacklist}([A-Z][a-z]+\s+[A-Z][a-z]+),\s*[\w.+-]+@",  # Name before comma + email (not greeting)
-            rf"^{greeting_blacklist}([A-Z][a-z]+\s+[A-Z][a-z]+),\s*\+?\d{{6,}}",  # Name before comma + phone (not greeting)
-            rf"^{greeting_blacklist}([A-Z][a-z]+\s+[A-Z][a-z]+),",  # Name at start of message before comma (not greeting)
-            r",\s*([A-Z][a-z]+\s+[A-Z][a-z]+)\s*$",  # Name after comma at end of message
-            # Names between commas or followed by email/phone in middle of message
-            r",\s*([A-Z][a-z]+\s+[A-Z][a-z]+),\s*[\w.+-]+@",  # ..., Name, email@...
-            r",\s*([A-Z][a-z]+\s+[A-Z][a-z]+),\s*\+?\d{6,}",  # ..., Name, phone...
-            r",\s*([A-Z][a-z]+\s+[A-Z][a-z]+),",  # ..., Name, ... (between commas)
+            rf"^{greeting_blacklist}([A-Z][a-z]+\s+[A-Z][a-z]+),\s*[\w.+-]+@",  # Two-word name before comma + email (not greeting)
+            rf"^{greeting_blacklist}([A-Z][a-z]+\s+[A-Z][a-z]+),\s*\+?\d{{6,}}",  # Two-word name before comma + phone (not greeting)
+            rf"^{greeting_blacklist}([A-Z][a-z]+\s+[A-Z][a-z]+),",  # Two-word name at start before comma (not greeting)
+            r",\s*([A-Z][a-z]+\s+[A-Z][a-z]+)\s*$",  # Two-word name after comma at end
+            r",\s*([A-Z][a-z]+\s+[A-Z][a-z]+),\s*[\w.+-]+@",  # ..., Two-word Name, email@...
+            r",\s*([A-Z][a-z]+\s+[A-Z][a-z]+),\s*\+?\d{6,}",  # ..., Two-word Name, phone...
+            r",\s*([A-Z][a-z]+\s+[A-Z][a-z]+),",  # ..., Two-word Name, ... (between commas)
+            # Comma-separated names - SINGLE WORD like "Jamesborn, email@example.com"
+            rf"^{greeting_blacklist}([A-Z][a-z]{{2,}}),\s*[\w.+-]+@",  # Single name before comma + email (not greeting)
+            rf"^{greeting_blacklist}([A-Z][a-z]{{2,}}),\s*\+?\d{{6,}}",  # Single name before comma + phone (not greeting)
+            r",\s*([A-Z][a-z]{2,}),\s*[\w.+-]+@",  # ..., Single Name, email@...
+            r",\s*([A-Z][a-z]{2,}),\s*\+?\d{6,}",  # ..., Single Name, phone...
         ]
 
         print(f"🔍 Looking for name, email, phone in recent messages...")
