@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="{{ language }}">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% if language == 'fr' %}Rendez-vous annulé{% else %}Appointment Cancelled{% endif %}</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f5;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: #ffffff;
+        }
+        .header {
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+            padding: 40px 30px;
+            text-align: center;
+        }
+        .header h1 {
+            color: #ffffff;
+            margin: 0;
+            font-size: 28px;
+            font-weight: 600;
+        }
+        .header .icon {
+            font-size: 48px;
+            margin-bottom: 10px;
+        }
+        .content {
+            padding: 40px 30px;
+        }
+        .greeting {
+            font-size: 18px;
+            margin-bottom: 20px;
+            color: #18181b;
+        }
+        .message {
+            font-size: 16px;
+            color: #52525b;
+            margin-bottom: 30px;
+        }
+        .cancellation-notice {
+            background-color: #fee2e2;
+            border: 2px solid #ef4444;
+            color: #7f1d1d;
+            padding: 15px 20px;
+            border-radius: 8px;
+            text-align: center;
+            font-size: 18px;
+            font-weight: 600;
+            margin: 30px 0;
+        }
+        .appointment-details {
+            background-color: #f4f4f5;
+            border-left: 4px solid #ef4444;
+            padding: 20px;
+            margin: 30px 0;
+            border-radius: 4px;
+        }
+        .detail-row {
+            display: flex;
+            margin-bottom: 12px;
+            font-size: 15px;
+        }
+        .detail-row:last-child {
+            margin-bottom: 0;
+        }
+        .detail-label {
+            font-weight: 600;
+            color: #3f3f46;
+            min-width: 140px;
+        }
+        .detail-value {
+            color: #52525b;
+            text-decoration: line-through;
+        }
+        .footer {
+            background-color: #f4f4f5;
+            padding: 30px;
+            text-align: center;
+            font-size: 14px;
+            color: #71717a;
+        }
+        .footer-business {
+            font-weight: 600;
+            color: #3f3f46;
+            margin-bottom: 10px;
+        }
+        @media only screen and (max-width: 600px) {
+            .content {
+                padding: 30px 20px;
+            }
+            .detail-row {
+                flex-direction: column;
+            }
+            .detail-label {
+                margin-bottom: 4px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="icon">✕</div>
+            <h1>
+                {% if language == 'fr' %}
+                    Rendez-vous annulé
+                {% else %}
+                    Appointment Cancelled
+                {% endif %}
+            </h1>
+        </div>
+
+        <div class="content">
+            <div class="greeting">
+                {% if language == 'fr' %}
+                    Bonjour {{ customer_name }},
+                {% else %}
+                    Hello {{ customer_name }},
+                {% endif %}
+            </div>
+
+            <div class="cancellation-notice">
+                {% if language == 'fr' %}
+                    Votre rendez-vous a été annulé
+                {% else %}
+                    Your appointment has been cancelled
+                {% endif %}
+            </div>
+
+            <div class="message">
+                {% if language == 'fr' %}
+                    Votre rendez-vous avec <strong>{{ business_name }}</strong> a été annulé.
+                {% else %}
+                    Your appointment with <strong>{{ business_name }}</strong> has been cancelled.
+                {% endif %}
+            </div>
+
+            <div class="appointment-details">
+                <div class="detail-row">
+                    <div class="detail-label">
+                        {% if language == 'fr' %}📅 Date{% else %}📅 Date{% endif %}
+                    </div>
+                    <div class="detail-value">{{ appointment_date }}</div>
+                </div>
+                <div class="detail-row">
+                    <div class="detail-label">
+                        {% if language == 'fr' %}🕐 Heure{% else %}🕐 Time{% endif %}
+                    </div>
+                    <div class="detail-value">{{ appointment_time }}</div>
+                </div>
+            </div>
+
+            <div class="message">
+                {% if language == 'fr' %}
+                    Si vous souhaitez prendre un nouveau rendez-vous, n'hésitez pas à nous contacter. Nous espérons vous revoir bientôt !
+                {% else %}
+                    If you would like to schedule a new appointment, please don't hesitate to contact us. We hope to see you again soon!
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="footer">
+            <div class="footer-business">{{ business_name }}</div>
+            <div>
+                {% if language == 'fr' %}
+                    Cet email a été envoyé via Raven Support
+                {% else %}
+                    This email was sent via Raven Support
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</body>
+</html>

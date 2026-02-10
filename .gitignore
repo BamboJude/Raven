@@ -1,0 +1,67 @@
+# Environment variables (IMPORTANT: Keep secrets safe!)
+.env
+.env.local
+.env*.local
+*.env
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+venv/
+env/
+ENV/
+*.egg-info/
+dist/
+build/
+*.egg
+
+# Node.js
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+
+# Next.js
+frontend/.next/
+frontend/out/
+frontend/build/
+
+# Widget build (we'll keep dist for now, but can exclude later)
+# widget/dist/
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+nohup.out
+
+# Database
+*.db
+*.sqlite
+*.sqlite3
+
+# Testing
+.coverage
+htmlcov/
+.pytest_cache/
+
+# Claude Code (optional - remove if you want to track memory)
+.claude/
+
+# Temporary files
+*.tmp
+*.bak
+*.backup

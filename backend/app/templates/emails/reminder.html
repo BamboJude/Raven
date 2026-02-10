@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="{{ language }}">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% if language == 'fr' %}Rappel de rendez-vous{% else %}Appointment Reminder{% endif %}</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f5;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: #ffffff;
+        }
+        .header {
+            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+            padding: 40px 30px;
+            text-align: center;
+        }
+        .header h1 {
+            color: #ffffff;
+            margin: 0;
+            font-size: 28px;
+            font-weight: 600;
+        }
+        .header .icon {
+            font-size: 48px;
+            margin-bottom: 10px;
+        }
+        .content {
+            padding: 40px 30px;
+        }
+        .greeting {
+            font-size: 18px;
+            margin-bottom: 20px;
+            color: #18181b;
+        }
+        .message {
+            font-size: 16px;
+            color: #52525b;
+            margin-bottom: 30px;
+        }
+        .reminder-badge {
+            background-color: #fef3c7;
+            border: 2px solid #f59e0b;
+            color: #92400e;
+            padding: 15px 20px;
+            border-radius: 8px;
+            text-align: center;
+            font-size: 18px;
+            font-weight: 600;
+            margin: 30px 0;
+        }
+        .appointment-details {
+            background-color: #f4f4f5;
+            border-left: 4px solid #f59e0b;
+            padding: 20px;
+            margin: 30px 0;
+            border-radius: 4px;
+        }
+        .detail-row {
+            display: flex;
+            margin-bottom: 12px;
+            font-size: 15px;
+        }
+        .detail-row:last-child {
+            margin-bottom: 0;
+        }
+        .detail-label {
+            font-weight: 600;
+            color: #3f3f46;
+            min-width: 140px;
+        }
+        .detail-value {
+            color: #52525b;
+        }
+        .footer {
+            background-color: #f4f4f5;
+            padding: 30px;
+            text-align: center;
+            font-size: 14px;
+            color: #71717a;
+        }
+        .footer-business {
+            font-weight: 600;
+            color: #3f3f46;
+            margin-bottom: 10px;
+        }
+        @media only screen and (max-width: 600px) {
+            .content {
+                padding: 30px 20px;
+            }
+            .detail-row {
+                flex-direction: column;
+            }
+            .detail-label {
+                margin-bottom: 4px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="icon">🔔</div>
+            <h1>
+                {% if language == 'fr' %}
+                    Rappel de rendez-vous
+                {% else %}
+                    Appointment Reminder
+                {% endif %}
+            </h1>
+        </div>
+
+        <div class="content">
+            <div class="greeting">
+                {% if language == 'fr' %}
+                    Bonjour {{ customer_name }},
+                {% else %}
+                    Hello {{ customer_name }},
+                {% endif %}
+            </div>
+
+            <div class="reminder-badge">
+                {% if language == 'fr' %}
+                    {% if hours_before == 24 %}
+                        Votre rendez-vous est demain
+                    {% else %}
+                        Votre rendez-vous est dans {{ hours_before }}h
+                    {% endif %}
+                {% else %}
+                    {% if hours_before == 24 %}
+                        Your appointment is tomorrow
+                    {% else %}
+                        Your appointment is in {{ hours_before }}h
+                    {% endif %}
+                {% endif %}
+            </div>
+
+            <div class="message">
+                {% if language == 'fr' %}
+                    Ceci est un rappel amical concernant votre rendez-vous avec <strong>{{ business_name }}</strong>.
+                {% else %}
+                    This is a friendly reminder about your appointment with <strong>{{ business_name }}</strong>.
+                {% endif %}
+            </div>
+
+            <div class="appointment-details">
+                <div class="detail-row">
+                    <div class="detail-label">
+                        {% if language == 'fr' %}📅 Date{% else %}📅 Date{% endif %}
+                    </div>
+                    <div class="detail-value">{{ appointment_date }}</div>
+                </div>
+                <div class="detail-row">
+                    <div class="detail-label">
+                        {% if language == 'fr' %}🕐 Heure{% else %}🕐 Time{% endif %}
+                    </div>
+                    <div class="detail-value">{{ appointment_time }}</div>
+                </div>
+                <div class="detail-row">
+                    <div class="detail-label">
+                        {% if language == 'fr' %}⏱️ Durée{% else %}⏱️ Duration{% endif %}
+                    </div>
+                    <div class="detail-value">{{ duration_minutes }} {% if language == 'fr' %}minutes{% else %}minutes{% endif %}</div>
+                </div>
+                {% if service_type %}
+                <div class="detail-row">
+                    <div class="detail-label">
+                        {% if language == 'fr' %}💼 Service{% else %}💼 Service{% endif %}
+                    </div>
+                    <div class="detail-value">{{ service_type }}</div>
+                </div>
+                {% endif %}
+            </div>
+
+            <div class="message">
+                {% if language == 'fr' %}
+                    Nous avons hâte de vous voir ! Si vous devez annuler ou reporter votre rendez-vous, veuillez nous en informer dès que possible.
+                {% else %}
+                    We look forward to seeing you! If you need to cancel or reschedule your appointment, please let us know as soon as possible.
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="footer">
+            <div class="footer-business">{{ business_name }}</div>
+            <div>
+                {% if language == 'fr' %}
+                    Cet email a été envoyé via Raven Support
+                {% else %}
+                    This email was sent via Raven Support
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</body>
+</html>
