@@ -197,6 +197,11 @@ export const teamAPI = {
       method: "PATCH",
       body: JSON.stringify(data),
     }, token),
+
+  remove: (businessId: string, memberId: string, token: string) =>
+    fetchAPI(`/api/team/${businessId}/members/${memberId}`, {
+      method: "DELETE",
+    }, token),
 };
 
 // Dashboard API types
@@ -246,11 +251,6 @@ export const dashboardAPI = {
 
   getUpcomingAppointments: (businessId: string, token: string, days = 3): Promise<UpcomingAppointment[]> =>
     fetchAPI(`/api/dashboard/businesses/${businessId}/dashboard/upcoming-appointments?days=${days}`, {}, token),
-
-  remove: (businessId: string, memberId: string, token: string) =>
-    fetchAPI(`/api/team/${businessId}/members/${memberId}`, {
-      method: "DELETE",
-    }, token),
 
   // Analytics API
   getAnalytics: (businessId: string, days: number = 30) =>
