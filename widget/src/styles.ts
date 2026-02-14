@@ -30,39 +30,26 @@ export const styles = `
   left: 0;
 }
 
-/* Chat Button - Enhanced */
+/* Chat Button - Enhanced Modern Design */
 #raven-chat-button {
-  width: 64px;
-  height: 64px;
+  width: 60px;
+  height: 60px;
   border-radius: 50%;
-  background: linear-gradient(135deg, var(--raven-primary) 0%, var(--raven-primary-dark) 100%);
+  background: #007AFF;
   border: none;
   cursor: pointer;
-  box-shadow: var(--raven-shadow-lg);
+  box-shadow: 0 4px 20px rgba(0, 122, 255, 0.3);
   display: flex;
   align-items: center;
   justify-content: center;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   position: relative;
-  overflow: hidden;
-}
-
-#raven-chat-button::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: radial-gradient(circle at center, rgba(255, 255, 255, 0.2) 0%, transparent 70%);
-  opacity: 0;
-  transition: opacity 0.3s;
 }
 
 #raven-chat-button:hover {
-  transform: scale(1.1) rotate(5deg);
-  box-shadow: var(--raven-shadow-xl);
-}
-
-#raven-chat-button:hover::before {
-  opacity: 1;
+  transform: scale(1.08);
+  box-shadow: 0 6px 28px rgba(0, 122, 255, 0.4);
+  background: #0051D5;
 }
 
 #raven-chat-button:active {
@@ -70,10 +57,9 @@ export const styles = `
 }
 
 #raven-chat-button svg {
-  width: 30px;
-  height: 30px;
+  width: 28px;
+  height: 28px;
   fill: white;
-  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
 }
 
 #raven-chat-button.hidden {
@@ -82,23 +68,23 @@ export const styles = `
   transform: scale(0.5);
 }
 
-/* Chat Window - Enhanced */
+/* Chat Window - Enhanced Modern Design */
 #raven-chat-window {
   position: absolute;
-  bottom: 88px;
+  bottom: 76px;
   right: 0;
-  width: 400px;
+  width: 380px;
   max-width: calc(100vw - 48px);
-  height: 600px;
+  height: 680px;
   max-height: calc(100vh - 140px);
   background: white;
-  border-radius: 20px;
-  box-shadow: var(--raven-shadow-xl);
+  border-radius: 16px;
+  box-shadow: 0 8px 40px rgba(0, 0, 0, 0.12);
   display: none;
   flex-direction: column;
   overflow: hidden;
-  animation: raven-slide-up 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-  border: 1px solid rgba(0, 0, 0, 0.05);
+  animation: raven-slide-up 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  border: 1px solid #E5E5EA;
 }
 
 #raven-chat-window.open {
@@ -116,53 +102,48 @@ export const styles = `
   }
 }
 
-/* Chat Header - Enhanced */
+/* Chat Header - Enhanced Modern Design */
 #raven-chat-header {
-  background: linear-gradient(135deg, var(--raven-primary) 0%, var(--raven-primary-dark) 100%);
-  color: white;
-  padding: 20px;
+  background: white;
+  color: #000000;
+  padding: 16px 20px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 1px 0 rgba(0, 0, 0, 0.08);
   position: relative;
-}
-
-#raven-chat-header::after {
-  content: '';
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  height: 1px;
-  background: linear-gradient(90deg, transparent 0%, rgba(255, 255, 255, 0.2) 50%, transparent 100%);
 }
 
 #raven-chat-header h3 {
   margin: 0;
-  font-size: 17px;
+  font-size: 16px;
   font-weight: 600;
-  letter-spacing: -0.02em;
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+  letter-spacing: -0.01em;
+  color: #000000;
 }
 
 #raven-close-button {
-  background: rgba(255, 255, 255, 0.1);
-  backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  background: #F2F2F7;
+  border: none;
   border-radius: 8px;
-  color: white;
+  color: #000000;
   cursor: pointer;
-  padding: 6px;
+  padding: 8px;
   display: flex;
   align-items: center;
   justify-content: center;
   transition: all 0.2s;
+  width: 32px;
+  height: 32px;
 }
 
 #raven-close-button:hover {
-  background: rgba(255, 255, 255, 0.2);
-  transform: rotate(90deg);
+  background: #E5E5EA;
+  transform: scale(1.05);
+}
+
+#raven-close-button:active {
+  transform: scale(0.95);
 }
 
 /* Messages Container - Enhanced scrollbar */
@@ -172,14 +153,59 @@ export const styles = `
   padding: 20px;
   display: flex;
   flex-direction: column;
-  gap: 14px;
-  background: linear-gradient(to bottom, #f9fafb 0%, #ffffff 10%);
+  gap: 12px;
+  background: white;
   scroll-behavior: smooth;
+}
+
+/* Agent Status Indicator */
+#raven-agent-status {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: #8E8E93;
+  margin-top: 2px;
+}
+
+#raven-status-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+/* New Chat Button */
+#raven-new-chat-button {
+  background: #F2F2F7;
+  border: none;
+  border-radius: 8px;
+  width: 32px;
+  height: 32px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #000000;
+  transition: all 0.2s;
+}
+
+#raven-new-chat-button:hover {
+  background: #E5E5EA;
+  transform: scale(1.05);
+}
+
+#raven-new-chat-button:active {
+  transform: scale(0.95);
+}
+
+#raven-new-chat-button svg {
+  fill: #000000;
 }
 
 /* Custom Scrollbar */
 #raven-messages::-webkit-scrollbar {
-  width: 6px;
+  width: 4px;
 }
 
 #raven-messages::-webkit-scrollbar-track {
@@ -187,26 +213,41 @@ export const styles = `
 }
 
 #raven-messages::-webkit-scrollbar-thumb {
-  background: #d1d5db;
+  background: #D1D1D6;
   border-radius: 10px;
   transition: background 0.2s;
 }
 
 #raven-messages::-webkit-scrollbar-thumb:hover {
-  background: #9ca3af;
+  background: #8E8E93;
 }
 
-/* Message Bubbles - Enhanced */
-.raven-message {
+/* Message Bubbles - Enhanced with Read Receipts */
+.raven-message-wrapper {
+  display: flex;
+  flex-direction: column;
   max-width: 80%;
+  animation: raven-message-appear 0.3s ease-out;
+}
+
+.raven-message-wrapper.user {
+  align-self: flex-end;
+  align-items: flex-end;
+}
+
+.raven-message-wrapper.assistant {
+  align-self: flex-start;
+  align-items: flex-start;
+}
+
+.raven-message {
   padding: 14px 18px;
   border-radius: 18px;
   font-size: 14.5px;
   line-height: 1.5;
   word-wrap: break-word;
-  animation: raven-message-appear 0.3s ease-out;
   position: relative;
-  box-shadow: var(--raven-shadow-sm);
+  max-width: 100%;
 }
 
 @keyframes raven-message-appear {
@@ -221,19 +262,33 @@ export const styles = `
 }
 
 .raven-message.user {
-  background: linear-gradient(135deg, var(--raven-primary) 0%, var(--raven-primary-dark) 100%);
+  background: #007AFF;
   color: white;
-  align-self: flex-end;
   border-bottom-right-radius: 4px;
-  box-shadow: 0 4px 12px rgba(14, 165, 233, 0.3);
+  box-shadow: 0 1px 2px rgba(0, 122, 255, 0.2);
 }
 
 .raven-message.assistant {
-  background: white;
-  color: #1f2937;
-  align-self: flex-start;
+  background: #F2F2F7;
+  color: #000000;
   border-bottom-left-radius: 4px;
-  border: 1px solid #e5e7eb;
+  box-shadow: none;
+}
+
+/* Read Receipt */
+.raven-read-receipt {
+  font-size: 11px;
+  color: #8E8E93;
+  margin-top: 4px;
+  padding-right: 2px;
+  font-weight: 400;
+  letter-spacing: 0.01em;
+}
+
+/* Bold text support in messages */
+.raven-message strong,
+.raven-message b {
+  font-weight: 700;
 }
 
 /* Typing Indicator - Enhanced */
@@ -241,19 +296,18 @@ export const styles = `
   display: flex;
   gap: 6px;
   padding: 14px 18px;
-  background: white;
-  border: 1px solid #e5e7eb;
+  background: #F2F2F7;
   border-radius: 18px;
   align-self: flex-start;
   border-bottom-left-radius: 4px;
-  box-shadow: var(--raven-shadow-sm);
+  box-shadow: none;
   animation: raven-message-appear 0.3s ease-out;
 }
 
 .raven-typing span {
-  width: 9px;
-  height: 9px;
-  background: linear-gradient(135deg, var(--raven-primary) 0%, var(--raven-primary-dark) 100%);
+  width: 8px;
+  height: 8px;
+  background: #8E8E93;
   border-radius: 50%;
   animation: raven-bounce 1.4s infinite ease-in-out;
 }
@@ -288,84 +342,45 @@ export const styles = `
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
 }
 
-/* Input Area - Enhanced */
+/* Input Area - Enhanced Modern Design */
 #raven-input-container {
-  padding: 16px 20px 20px;
-  border-top: 1px solid #e5e7eb;
+  padding: 12px 16px;
+  border-top: 1px solid #E5E5EA;
   display: flex;
-  gap: 10px;
-  align-items: center;
+  gap: 8px;
+  align-items: flex-end;
   background: white;
-}
-
-#raven-image-button {
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  background: #f3f4f6;
-  border: none;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: all 0.2s;
-  flex-shrink: 0;
-}
-
-#raven-image-button:hover {
-  background: #e5e7eb;
-  transform: scale(1.05);
-}
-
-#raven-image-button:active {
-  transform: scale(0.95);
-}
-
-#raven-image-button svg {
-  width: 20px;
-  height: 20px;
-  fill: #6b7280;
+  position: relative;
 }
 
 #raven-file-input {
   display: none;
 }
 
-#raven-input {
+/* Input Wrapper - Contains textarea and buttons */
+#raven-input-wrapper {
   flex: 1;
-  padding: 12px 18px;
-  border: 2px solid #e5e7eb;
-  border-radius: 24px;
-  font-size: 14.5px;
-  outline: none;
-  transition: all 0.2s;
-  background: #f9fafb;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-  resize: none;
-  min-height: 44px;
-  max-height: 120px;
-  line-height: 1.5;
-  overflow-y: auto;
-  overflow-wrap: break-word;
-  word-wrap: break-word;
-  white-space: pre-wrap;
-}
-
-#raven-input:focus {
-  border-color: var(--raven-primary);
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 8px 12px;
+  border: 1px solid #D1D1D6;
+  border-radius: 20px;
   background: white;
-  box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.1);
+  transition: all 0.2s;
 }
 
-#raven-input::placeholder {
-  color: #9ca3af;
+#raven-input-wrapper:focus-within {
+  border-color: #007AFF;
+  box-shadow: 0 0 0 1px #007AFF;
 }
 
-#raven-send-button {
-  width: 46px;
-  height: 46px;
+#raven-attachment-button,
+#raven-emoji-button {
+  width: 28px;
+  height: 28px;
   border-radius: 50%;
-  background: linear-gradient(135deg, var(--raven-primary) 0%, var(--raven-primary-dark) 100%);
+  background: transparent;
   border: none;
   cursor: pointer;
   display: flex;
@@ -373,30 +388,91 @@ export const styles = `
   justify-content: center;
   transition: all 0.2s;
   flex-shrink: 0;
-  box-shadow: 0 4px 12px rgba(14, 165, 233, 0.3);
+  font-size: 18px;
+  color: #8E8E93;
+}
+
+#raven-attachment-button:hover,
+#raven-emoji-button:hover {
+  background: #F2F2F7;
+  transform: scale(1.05);
+}
+
+#raven-attachment-button:active,
+#raven-emoji-button:active {
+  transform: scale(0.95);
+  background: #E5E5EA;
+}
+
+#raven-attachment-button svg {
+  width: 18px;
+  height: 18px;
+  fill: #007AFF;
+}
+
+#raven-input {
+  flex: 1;
+  padding: 4px 8px;
+  border: none;
+  font-size: 15px;
+  outline: none;
+  background: transparent;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  resize: none;
+  min-height: 24px;
+  max-height: 100px;
+  line-height: 1.4;
+  overflow-y: auto;
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+  white-space: pre-wrap;
+  color: #000000;
+}
+
+#raven-input::placeholder {
+  color: #8E8E93;
+}
+
+#raven-send-button {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: #007AFF;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+  flex-shrink: 0;
+  box-shadow: none;
+  margin-bottom: 2px;
 }
 
 #raven-send-button:hover {
-  transform: scale(1.08);
-  box-shadow: 0 6px 20px rgba(14, 165, 233, 0.4);
+  background: #0051D5;
+  transform: scale(1.05);
 }
 
 #raven-send-button:active {
   transform: scale(0.95);
+  background: #004FC1;
 }
 
 #raven-send-button:disabled {
-  background: #e5e7eb;
+  background: #E5E5EA;
   cursor: not-allowed;
-  box-shadow: none;
   transform: none;
 }
 
+#raven-send-button:disabled svg {
+  fill: #8E8E93;
+}
+
 #raven-send-button svg {
-  width: 20px;
-  height: 20px;
+  width: 18px;
+  height: 18px;
   fill: white;
-  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.2));
 }
 
 /* Image Preview - Enhanced */
@@ -463,12 +539,12 @@ export const styles = `
   background: #fee2e2;
 }
 
-/* Quick Actions - Enhanced */
+/* Quick Actions - Enhanced Modern Design */
 .raven-quick-actions {
   display: flex;
   flex-wrap: wrap;
-  gap: 10px;
-  padding: 12px 0;
+  gap: 8px;
+  padding: 8px 0;
   align-items: center;
   animation: raven-fade-in 0.4s ease-out 0.2s both;
 }
@@ -487,89 +563,72 @@ export const styles = `
 .raven-quick-action-btn {
   display: flex;
   align-items: center;
-  gap: 8px;
-  padding: 12px 18px;
-  background: white;
-  border: 2px solid var(--raven-primary);
-  border-radius: 24px;
-  color: var(--raven-primary);
-  font-size: 13.5px;
-  font-weight: 600;
+  gap: 6px;
+  padding: 10px 16px;
+  background: #F2F2F7;
+  border: none;
+  border-radius: 20px;
+  color: #000000;
+  font-size: 14px;
+  font-weight: 500;
   cursor: pointer;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  box-shadow: 0 2px 8px rgba(14, 165, 233, 0.15);
-  position: relative;
-  overflow: hidden;
-}
-
-.raven-quick-action-btn::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(135deg, var(--raven-primary) 0%, var(--raven-primary-dark) 100%);
-  opacity: 0;
-  transition: opacity 0.3s;
+  transition: all 0.2s;
+  box-shadow: none;
 }
 
 .raven-quick-action-btn:hover {
-  color: white;
-  transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(14, 165, 233, 0.3);
-  border-color: transparent;
-}
-
-.raven-quick-action-btn:hover::before {
-  opacity: 1;
+  background: #E5E5EA;
+  transform: translateY(-1px);
 }
 
 .raven-quick-action-btn:active {
   transform: translateY(0);
-}
-
-.raven-quick-action-btn span {
-  position: relative;
-  z-index: 1;
+  background: #D1D1D6;
 }
 
 .raven-quick-action-btn .icon {
-  font-size: 18px;
+  font-size: 16px;
   line-height: 1;
-  position: relative;
-  z-index: 1;
 }
 
 /* Powered by - Enhanced */
 #raven-powered-by {
   text-align: center;
-  padding: 10px;
-  font-size: 11px;
-  color: #9ca3af;
-  border-top: 1px solid #f3f4f6;
-  background: #fafafa;
-  font-weight: 500;
+  padding: 12px;
+  font-size: 12px;
+  color: #8E8E93;
+  border-top: 1px solid #E5E5EA;
+  background: white;
+  font-weight: 400;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
 }
 
 #raven-powered-by a {
-  color: var(--raven-primary);
+  color: #000000;
   text-decoration: none;
   font-weight: 600;
   transition: color 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 4px;
 }
 
 #raven-powered-by a:hover {
-  color: var(--raven-primary-dark);
-  text-decoration: underline;
+  color: #007AFF;
 }
 
 /* Mobile Responsive - Full screen on small devices */
 @media (max-width: 480px) {
   #raven-widget-container {
-    bottom: 16px;
-    right: 16px;
+    bottom: 20px;
+    right: 20px;
   }
 
   #raven-widget-container.position-left {
-    left: 16px;
+    left: 20px;
   }
 
   #raven-chat-button {
@@ -596,7 +655,7 @@ export const styles = `
     max-height: 100dvh;
     border-radius: 0;
     border: none;
-    animation: raven-slide-up-mobile 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    animation: raven-slide-up-mobile 0.25s cubic-bezier(0.4, 0, 0.2, 1);
   }
 
   #raven-widget-container.position-left #raven-chat-window {
@@ -605,68 +664,126 @@ export const styles = `
   }
 
   #raven-chat-header {
-    padding: 16px 20px;
-    padding-top: max(16px, env(safe-area-inset-top));
+    padding: 14px 16px;
+    padding-top: max(14px, env(safe-area-inset-top, 14px));
     border-radius: 0;
+  }
+
+  #raven-chat-header h3 {
+    font-size: 17px;
   }
 
   #raven-messages {
     padding: 16px;
-    gap: 12px;
+    gap: 10px;
+  }
+
+  .raven-message-wrapper {
+    max-width: 85%;
   }
 
   .raven-message {
-    max-width: 85%;
-    font-size: 14px;
+    font-size: 15px;
     padding: 12px 16px;
   }
 
+  .raven-read-receipt {
+    font-size: 11px;
+    margin-top: 3px;
+  }
+
   #raven-input-container {
-    padding: 12px 16px;
-    padding-bottom: max(16px, env(safe-area-inset-bottom));
-    gap: 8px;
+    padding: 10px 12px;
+    padding-bottom: max(12px, env(safe-area-inset-bottom, 12px));
+    gap: 6px;
+  }
+
+  #raven-input-wrapper {
+    padding: 6px 10px;
   }
 
   #raven-input {
     font-size: 16px; /* Prevents iOS zoom */
-    padding: 10px 16px;
-    min-height: 42px;
+    min-height: 24px;
   }
 
   #raven-send-button {
-    width: 42px;
-    height: 42px;
-  }
-
-  #raven-image-button {
     width: 36px;
     height: 36px;
+    margin-bottom: 0;
+  }
+
+  #raven-send-button svg {
+    width: 16px;
+    height: 16px;
+  }
+
+  #raven-attachment-button,
+  #raven-emoji-button {
+    width: 26px;
+    height: 26px;
+    font-size: 16px;
+  }
+
+  #raven-attachment-button svg {
+    width: 16px;
+    height: 16px;
+  }
+
+  .raven-emoji-picker {
+    right: 12px;
+    grid-template-columns: repeat(6, 1fr);
+    max-width: 240px;
+  }
+
+  .raven-emoji-btn {
+    width: 28px;
+    height: 28px;
+    font-size: 18px;
   }
 
   .raven-quick-actions {
-    gap: 8px;
+    gap: 6px;
+    padding: 6px 0;
   }
 
   .raven-quick-action-btn {
     font-size: 13px;
-    padding: 10px 14px;
+    padding: 9px 14px;
   }
 
   #raven-powered-by {
-    padding-bottom: max(8px, env(safe-area-inset-bottom));
+    padding: 10px;
+    padding-bottom: max(10px, env(safe-area-inset-bottom, 10px));
+    font-size: 11px;
   }
 
   .raven-slot-buttons {
-    padding: 8px 12px !important;
+    padding: 6px 0;
   }
 
   .raven-slot-buttons button {
-    font-size: 12px !important;
-    padding: 6px 10px !important;
+    font-size: 13px;
+    padding: 8px 14px;
   }
 
   #raven-image-preview {
-    padding: 10px 16px;
+    padding: 10px 12px;
+  }
+
+  #raven-new-chat-button,
+  #raven-close-button {
+    width: 30px;
+    height: 30px;
+  }
+
+  #raven-agent-status {
+    font-size: 11px;
+  }
+
+  #raven-status-dot {
+    width: 7px;
+    height: 7px;
   }
 }
 
@@ -684,8 +801,24 @@ export const styles = `
 /* Tablet Responsive */
 @media (min-width: 481px) and (max-width: 768px) {
   #raven-chat-window {
-    width: 380px;
-    height: 550px;
+    width: 360px;
+    height: 620px;
+  }
+
+  .raven-message-wrapper {
+    max-width: 82%;
+  }
+
+  .raven-message {
+    font-size: 14px;
+  }
+}
+
+/* Large Desktop Responsive */
+@media (min-width: 1440px) {
+  #raven-chat-window {
+    width: 400px;
+    height: 700px;
   }
 }
 
@@ -936,14 +1069,90 @@ export const styles = `
 
 /* Away Banner */
 .raven-away-banner {
-  background: #fef3c7;
-  color: #92400e;
-  padding: 10px 16px;
-  border-radius: 10px;
+  background: #FFF3CD;
+  color: #856404;
+  padding: 12px 16px;
+  border-radius: 12px;
   font-size: 13px;
   text-align: center;
   margin-bottom: 8px;
   line-height: 1.4;
+  border: 1px solid #FFE69C;
+}
+
+/* Emoji Picker */
+.raven-emoji-picker {
+  position: absolute;
+  bottom: calc(100% + 8px);
+  right: 60px;
+  background: white;
+  border: 1px solid #E5E5EA;
+  border-radius: 16px;
+  padding: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+  display: grid;
+  grid-template-columns: repeat(8, 1fr);
+  gap: 4px;
+  animation: raven-slide-up 0.2s ease-out;
+  z-index: 100;
+  max-width: 320px;
+}
+
+.raven-emoji-btn {
+  width: 32px;
+  height: 32px;
+  border: none;
+  background: transparent;
+  border-radius: 8px;
+  font-size: 20px;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.raven-emoji-btn:hover {
+  background: #F2F2F7;
+  transform: scale(1.1);
+}
+
+.raven-emoji-btn:active {
+  transform: scale(0.95);
+}
+
+/* Slot Selection Buttons */
+.raven-slot-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 8px 0;
+  margin-bottom: 8px;
+  animation: raven-fade-in 0.3s ease-out;
+}
+
+.raven-slot-buttons button {
+  background: #F2F2F7;
+  border: none;
+  color: #000000;
+  padding: 10px 16px;
+  border-radius: 18px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+  white-space: nowrap;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+.raven-slot-buttons button:hover {
+  background: #007AFF;
+  color: white;
+  transform: translateY(-1px);
+}
+
+.raven-slot-buttons button:active {
+  transform: translateY(0);
 }
 
 /* Mobile overrides for new features */

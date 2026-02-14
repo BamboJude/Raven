@@ -12,7 +12,7 @@ import { RavenChat, MediaAttachment, SlotOption } from "./chat";
 const CHAT_ICON = `<svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm0 14H5.17L4 17.17V4h16v12z"/><path d="M7 9h2v2H7zm4 0h2v2h-2zm4 0h2v2h-2z"/></svg>`;
 const CLOSE_ICON = `<svg viewBox="0 0 24 24" width="24" height="24"><path fill="currentColor" d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>`;
 const SEND_ICON = `<svg viewBox="0 0 24 24"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>`;
-const IMAGE_ICON = `<svg viewBox="0 0 24 24"><path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/></svg>`;
+const PLUS_ICON = `<svg viewBox="0 0 24 24" width="24" height="24"><path fill="currentColor" d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>`;
 const REMOVE_ICON = `<svg viewBox="0 0 24 24" width="16" height="16"><path fill="currentColor" d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>`;
 
 // New chat icon
@@ -236,15 +236,15 @@ class RavenWidget {
     const header = document.createElement("div");
     header.id = "raven-chat-header";
     header.innerHTML = `
-      <div style="display: flex; flex-direction: column;">
+      <div style="display: flex; flex-direction: column; gap: 2px;">
         <h3>${this.escapeHtml(this.businessName)}</h3>
-        <div id="raven-agent-status" style="font-size: 11px; opacity: 0.9; display: flex; align-items: center; gap: 4px;">
-          <span id="raven-status-dot" style="width: 8px; height: 8px; border-radius: 50%; background: ${this.isBusinessOnline ? '#22c55e' : '#9ca3af'};"></span>
+        <div id="raven-agent-status">
+          <span id="raven-status-dot" style="background: ${this.isBusinessOnline ? '#34C759' : '#8E8E93'};"></span>
           <span id="raven-status-text">${this.isBusinessOnline ? this.t.aiAssistant : this.t.offline}</span>
         </div>
       </div>
       <div style="display: flex; gap: 8px; align-items: center;">
-        <button id="raven-new-chat-button" aria-label="${this.t.newChat}" title="${this.t.newChat}" style="background: rgba(255,255,255,0.2); border: none; border-radius: 50%; width: 32px; height: 32px; cursor: pointer; display: flex; align-items: center; justify-content: center; color: white;">${NEW_CHAT_ICON}</button>
+        <button id="raven-new-chat-button" aria-label="${this.t.newChat}" title="${this.t.newChat}">${NEW_CHAT_ICON}</button>
         <button id="raven-close-button" aria-label="${this.t.close}">${CLOSE_ICON}</button>
       </div>
     `;
@@ -262,8 +262,11 @@ class RavenWidget {
     inputContainer.id = "raven-input-container";
     inputContainer.innerHTML = `
       <input type="file" id="raven-file-input" accept="image/*" />
-      <button id="raven-image-button" aria-label="Add image">${IMAGE_ICON}</button>
-      <textarea id="raven-input" placeholder="${this.t.placeholder}" rows="1"></textarea>
+      <div id="raven-input-wrapper">
+        <button id="raven-attachment-button" aria-label="Add attachment" title="Add file or screenshot">${PLUS_ICON}</button>
+        <textarea id="raven-input" placeholder="${this.t.placeholder}" rows="1"></textarea>
+        <button id="raven-emoji-button" aria-label="Add emoji" title="Add emoji">😊</button>
+      </div>
       <button id="raven-send-button" aria-label="${this.t.send}">${SEND_ICON}</button>
     `;
 
@@ -331,12 +334,74 @@ class RavenWidget {
     // Auto-resize textarea as user types
     this.input?.addEventListener("input", () => this.autoResizeInput());
 
-    // Image button
-    const imageButton = document.getElementById("raven-image-button");
-    imageButton?.addEventListener("click", () => this.fileInput?.click());
+    // Attachment button (file/image)
+    const attachmentButton = document.getElementById("raven-attachment-button");
+    attachmentButton?.addEventListener("click", () => this.fileInput?.click());
+
+    // Emoji button
+    const emojiButton = document.getElementById("raven-emoji-button");
+    emojiButton?.addEventListener("click", () => this.showEmojiPicker());
 
     // File input change
     this.fileInput?.addEventListener("change", (e) => this.handleFileSelect(e));
+  }
+
+  /**
+   * Show emoji picker.
+   */
+  private showEmojiPicker(): void {
+    // Common emojis
+    const emojis = [
+      '😊', '😂', '❤️', '👍', '🙏', '😍', '🎉', '🔥',
+      '✨', '💯', '👏', '🤔', '😅', '😎', '🥰', '💪',
+      '🙌', '✅', '📅', '📞', '✉️', '💼', '🏠', '🚀'
+    ];
+
+    // Check if picker already exists
+    const existingPicker = document.getElementById('raven-emoji-picker');
+    if (existingPicker) {
+      existingPicker.remove();
+      return;
+    }
+
+    // Create picker
+    const picker = document.createElement('div');
+    picker.id = 'raven-emoji-picker';
+    picker.className = 'raven-emoji-picker';
+
+    emojis.forEach(emoji => {
+      const btn = document.createElement('button');
+      btn.textContent = emoji;
+      btn.className = 'raven-emoji-btn';
+      btn.onclick = () => {
+        if (this.input) {
+          const start = this.input.selectionStart || 0;
+          const end = this.input.selectionEnd || 0;
+          const text = this.input.value;
+          this.input.value = text.substring(0, start) + emoji + text.substring(end);
+          this.input.focus();
+          this.input.selectionStart = this.input.selectionEnd = start + emoji.length;
+        }
+        picker.remove();
+      };
+      picker.appendChild(btn);
+    });
+
+    // Add to container
+    const inputContainer = document.getElementById('raven-input-container');
+    if (inputContainer) {
+      inputContainer.appendChild(picker);
+    }
+
+    // Close on outside click
+    setTimeout(() => {
+      document.addEventListener('click', function closePickerOnOutsideClick(e) {
+        if (!picker.contains(e.target as Node) && e.target !== document.getElementById('raven-emoji-button')) {
+          picker.remove();
+          document.removeEventListener('click', closePickerOnOutsideClick);
+        }
+      });
+    }, 0);
   }
 
   /**
@@ -376,9 +441,15 @@ class RavenWidget {
   private showImagePreview(url: string, filename: string): void {
     if (!this.imagePreview) return;
 
+    // Check if it's a screenshot or regular image
+    const isScreenshot = filename.toLowerCase().includes('screen') ||
+                        filename.toLowerCase().includes('shot') ||
+                        filename.toLowerCase().startsWith('screenshot');
+    const displayName = isScreenshot ? 'Screenshot' : 'Image';
+
     this.imagePreview.innerHTML = `
       <img src="${url}" alt="Preview" />
-      <span>${this.escapeHtml(filename)}</span>
+      <span>${displayName}</span>
       <button id="raven-remove-image" aria-label="Remove">${REMOVE_ICON}</button>
     `;
     this.imagePreview.classList.add("has-image");
@@ -490,20 +561,24 @@ class RavenWidget {
   }
 
   /**
-   * Add a message to the chat.
+   * Add a message to the chat with read receipt support.
    */
-  private addMessage(role: "user" | "assistant", content: string, media?: MediaAttachment[]): void {
+  private addMessage(role: "user" | "assistant", content: string, media?: MediaAttachment[], showRead = false): void {
     if (!this.messagesContainer) return;
 
     // Track message count
     this.messageCount++;
 
+    // Create wrapper for message + read receipt
+    const wrapperEl = document.createElement("div");
+    wrapperEl.className = `raven-message-wrapper ${role}`;
+
     const messageEl = document.createElement("div");
     messageEl.className = `raven-message ${role}`;
 
-    // Add text content
+    // Add text content with HTML support for bold text
     const textEl = document.createElement("span");
-    textEl.textContent = content;
+    textEl.innerHTML = this.formatMessageText(content);
     messageEl.appendChild(textEl);
 
     // Add images if present
@@ -519,13 +594,40 @@ class RavenWidget {
       }
     }
 
-    this.messagesContainer.appendChild(messageEl);
+    wrapperEl.appendChild(messageEl);
+
+    // Add read receipt for user messages
+    if (role === "user" && showRead) {
+      const readReceipt = document.createElement("div");
+      readReceipt.className = "raven-read-receipt";
+      readReceipt.textContent = "Read";
+      wrapperEl.appendChild(readReceipt);
+    }
+
+    this.messagesContainer.appendChild(wrapperEl);
     this.scrollToBottom();
 
     // Show warning if conversation is getting long
     if (this.messageCount >= this.MAX_MESSAGES_BEFORE_WARNING && !this.longConversationWarningShown) {
       this.showLongConversationWarning();
     }
+  }
+
+  /**
+   * Format message text to support bold and other formatting.
+   */
+  private formatMessageText(text: string): string {
+    // Convert **bold** to <strong>bold</strong>
+    let formatted = text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+
+    // Also support __bold__ syntax
+    formatted = formatted.replace(/__(.*?)__/g, '<strong>$1</strong>');
+
+    // Escape any remaining HTML to prevent XSS
+    const temp = document.createElement('div');
+    temp.innerHTML = formatted;
+
+    return formatted;
   }
 
   /**
@@ -536,7 +638,7 @@ class RavenWidget {
 
     const warningEl = document.createElement("div");
     warningEl.className = "raven-warning-message";
-    warningEl.style.cssText = "background: #fef3c7; color: #92400e; padding: 10px 14px; border-radius: 8px; font-size: 13px; margin: 8px 0; text-align: center;";
+    warningEl.style.cssText = "background: #FFF3CD; color: #856404; padding: 12px 16px; border-radius: 12px; font-size: 13px; margin: 8px 0; text-align: center; border: 1px solid #FFE69C;";
     warningEl.textContent = this.t.longConversation;
 
     this.messagesContainer.appendChild(warningEl);
@@ -600,13 +702,20 @@ class RavenWidget {
       localPreviewUrl = this.pendingImage.previewUrl;
     }
 
-    // Add user message with local preview
+    // Add user message with local preview (no read receipt initially)
+    let userMessageWrapper: HTMLDivElement | null = null;
     if (localPreviewUrl) {
       this.addMessage("user", content || "📷", [
         { type: "image", url: localPreviewUrl, filename: this.pendingImage?.file.name },
-      ]);
+      ], false);
     } else {
-      this.addMessage("user", content);
+      this.addMessage("user", content, undefined, false);
+    }
+
+    // Get the last message wrapper to add read receipt later
+    if (this.messagesContainer) {
+      const wrappers = this.messagesContainer.querySelectorAll('.raven-message-wrapper.user');
+      userMessageWrapper = wrappers[wrappers.length - 1] as HTMLDivElement;
     }
 
     // Show typing indicator
@@ -616,12 +725,16 @@ class RavenWidget {
     const sendButton = document.getElementById(
       "raven-send-button"
     ) as HTMLButtonElement;
-    const imageButton = document.getElementById(
-      "raven-image-button"
+    const attachmentButton = document.getElementById(
+      "raven-attachment-button"
+    ) as HTMLButtonElement;
+    const emojiButton = document.getElementById(
+      "raven-emoji-button"
     ) as HTMLButtonElement;
     this.input.disabled = true;
     if (sendButton) sendButton.disabled = true;
-    if (imageButton) imageButton.disabled = true;
+    if (attachmentButton) attachmentButton.disabled = true;
+    if (emojiButton) emojiButton.disabled = true;
 
     try {
       // Upload image first if present
@@ -636,6 +749,14 @@ class RavenWidget {
 
       // Remove typing indicator
       this.removeTyping(typing);
+
+      // Add read receipt to user message
+      if (userMessageWrapper) {
+        const readReceipt = document.createElement("div");
+        readReceipt.className = "raven-read-receipt";
+        readReceipt.textContent = "Read";
+        userMessageWrapper.appendChild(readReceipt);
+      }
 
       // Update agent status based on response
       this.updateAgentStatus(response.isHumanTakeover);
@@ -666,7 +787,8 @@ class RavenWidget {
       // Re-enable input
       this.input.disabled = false;
       if (sendButton) sendButton.disabled = false;
-      if (imageButton) imageButton.disabled = false;
+      if (attachmentButton) attachmentButton.disabled = false;
+      if (emojiButton) emojiButton.disabled = false;
       this.input.focus();
     }
   }
@@ -744,12 +866,12 @@ class RavenWidget {
 
     if (statusDot && statusText) {
       if (isHuman) {
-        // Human agent - show orange/yellow indicator
-        statusDot.style.background = "#f59e0b";
+        // Human agent - show orange indicator
+        statusDot.style.background = "#FF9500";
         statusText.innerHTML = `${AGENT_ICON} ${this.t.humanAgent}`;
       } else {
         // AI assistant - show green indicator
-        statusDot.style.background = "#22c55e";
+        statusDot.style.background = "#34C759";
         statusText.textContent = this.t.aiAssistant;
       }
     }
@@ -761,44 +883,16 @@ class RavenWidget {
   private showSlotButtons(slots: SlotOption[]): void {
     if (!this.messagesContainer) return;
 
-    const primaryColor = this.widgetSettings.primary_color || "#0ea5e9";
-
     // Remove any existing slot buttons
     const existing = this.messagesContainer.querySelector(".raven-slot-buttons");
     if (existing) existing.remove();
 
     const container = document.createElement("div");
     container.className = "raven-slot-buttons";
-    container.style.cssText = `
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-      padding: 8px 16px;
-      margin-bottom: 8px;
-    `;
 
     slots.forEach((slot) => {
       const button = document.createElement("button");
-      button.style.cssText = `
-        background: white;
-        border: 1px solid ${primaryColor};
-        color: ${primaryColor};
-        padding: 8px 12px;
-        border-radius: 16px;
-        font-size: 13px;
-        cursor: pointer;
-        transition: all 0.2s;
-        white-space: nowrap;
-      `;
       button.textContent = slot.display;
-      button.onmouseenter = () => {
-        button.style.background = primaryColor;
-        button.style.color = "white";
-      };
-      button.onmouseleave = () => {
-        button.style.background = "white";
-        button.style.color = primaryColor;
-      };
       button.onclick = () => {
         // Send the actual date/time display instead of slot number
         if (this.input) {
