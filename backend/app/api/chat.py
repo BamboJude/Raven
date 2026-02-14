@@ -251,14 +251,17 @@ async def send_message(request: ChatRequest):
         if get_ai_service().detect_appointment_intent(request.message, business["language"]):
             appointment_intent = True
             is_fresh_booking_request = True
+            print(f"🔔 Appointment intent detected in current message: {request.message[:50]}...")
         else:
             # Check last 4 messages for prior booking intent (conversation context)
             for m in message_history[-4:]:
                 if get_ai_service().detect_appointment_intent(m["content"], business["language"]):
                     appointment_intent = True
+                    print(f"🔔 Appointment intent found in conversation history")
                     break
 
     if appointment_intent:
+        print(f"📅 Processing appointment booking flow...")
         # Find the most recent fresh booking request to determine where to start extracting
         # This prevents "Hi Raven" from greetings being extracted as names
         booking_flow_start_index = 0
@@ -279,6 +282,7 @@ async def send_message(request: ChatRequest):
 
         if booking_flow_messages:
             appointment_info = get_ai_service().extract_appointment_info(booking_flow_messages, available_slots)
+            print(f"📋 Extracted appointment info: name={appointment_info.get('name')}, email={appointment_info.get('email')}, date={appointment_info.get('date')}, time={appointment_info.get('time')}")
         else:
             # No messages yet after the booking request - start empty
             appointment_info = {
@@ -290,10 +294,12 @@ async def send_message(request: ChatRequest):
                 "service": None,
                 "notes": None,
             }
+            print(f"⏳ No booking flow messages yet - waiting for customer info")
 
         # Check if we have minimum required info (name, email, date, time) - phone is optional
         if all([appointment_info.get("name"), appointment_info.get("email"),
                 appointment_info.get("date"), appointment_info.get("time")]):
+            print(f"✅ All required info present - creating appointment...")
             try:
                 # Create the appointment
                 appointment = db.create_appointment(
@@ -311,7 +317,10 @@ async def send_message(request: ChatRequest):
 
                 if appointment:
                     appointment_created = True
+                    print(f"🎉 Appointment created successfully! ID: {appointment['id']}")
                     # Send confirmation notifications (email/SMS)
+                else:
+                    print(f"❌ Appointment creation returned None - check database constraints")
                     try:
                         notification_service = get_notification_service()
                         notification_service.send_appointment_confirmation(
@@ -338,11 +347,17 @@ async def send_message(request: ChatRequest):
                     else:
                         ai_response += f"\n\n✅ Appointment confirmed for {appointment_info['date']} at {appointment_info['time']}. We'll send you a reminder.\n\nIs there anything else I can help you with?"
             except Exception as e:
-                print(f"Failed to create appointment: {e}")
+                print(f"❌ APPOINTMENT CREATION ERROR: {type(e).__name__}: {e}")
+                import traceback
+                traceback.print_exc()
                 # Don't fail the chat, just log it
         else:
-            # AI already guides the user on what's needed — no extra warning appended here.
-            pass
+            missing = []
+            if not appointment_info.get("name"): missing.append("name")
+            if not appointment_info.get("email"): missing.append("email")
+            if not appointment_info.get("date"): missing.append("date")
+            if not appointment_info.get("time"): missing.append("time")
+            print(f"⚠️  Missing required info: {', '.join(missing)}")
 
     # Save the AI response
     db.create_message(
