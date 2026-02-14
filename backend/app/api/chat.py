@@ -319,8 +319,6 @@ async def send_message(request: ChatRequest):
                     appointment_created = True
                     print(f"🎉 Appointment created successfully! ID: {appointment['id']}")
                     # Send confirmation notifications (email/SMS)
-                else:
-                    print(f"❌ Appointment creation returned None - check database constraints")
                     try:
                         notification_service = get_notification_service()
                         notification_service.send_appointment_confirmation(
@@ -346,6 +344,8 @@ async def send_message(request: ChatRequest):
                         ai_response += f"\n\n✅ Rendez-vous confirmé pour le {appointment_info['date']} à {appointment_info['time']}. Nous vous enverrons un rappel.\n\nY a-t-il autre chose avec laquelle je peux vous aider ?"
                     else:
                         ai_response += f"\n\n✅ Appointment confirmed for {appointment_info['date']} at {appointment_info['time']}. We'll send you a reminder.\n\nIs there anything else I can help you with?"
+                else:
+                    print(f"❌ Appointment creation returned None - check database constraints")
             except Exception as e:
                 print(f"❌ APPOINTMENT CREATION ERROR: {type(e).__name__}: {e}")
                 import traceback
