@@ -30,10 +30,10 @@ export function EmptyState({
       <div className="flex h-20 w-20 items-center justify-center rounded-full bg-gray-100 mb-4">
         <Icon className="h-10 w-10 text-gray-400" />
       </div>
-      <h3 className="text-lg font-semibold text-navy-900 mb-2">{title}</h3>
+      <h3 className="text-lg font-semibold text-gray-900 mb-2">{title}</h3>
       <p className="text-sm text-gray-500 max-w-sm mb-6">{description}</p>
       {action && (
-        <Button onClick={action.onClick} className="bg-navy-900 hover:bg-navy-800">
+        <Button onClick={action.onClick} className="bg-primary-600 hover:bg-primary-700">
           {action.label}
         </Button>
       )}

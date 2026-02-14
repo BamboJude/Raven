@@ -13,6 +13,7 @@ export const translations = {
       signup: "Commencer gratuitement",
       dashboard: "Tableau de bord",
       logout: "Déconnexion",
+      profile: "Profil",
     },
     // Landing page
     landing: {
@@ -170,6 +171,7 @@ export const translations = {
       signup: "Get Started Free",
       dashboard: "Dashboard",
       logout: "Logout",
+      profile: "Profile",
     },
     // Landing page
     landing: {

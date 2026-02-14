@@ -57,9 +57,9 @@ export function DashboardHeader({ breadcrumbs = [], userEmail, userName }: Dashb
         <nav className="flex items-center space-x-2 text-sm">
           <a
             href="/dashboard"
-            className="text-gray-500 hover:text-navy-900 transition-colors"
+            className="text-gray-500 hover:text-gray-900 transition-colors"
           >
-            {t('dashboard')}
+            {t.nav.dashboard}
           </a>
           {breadcrumbs.map((item, index) => (
             <div key={index} className="flex items-center space-x-2">
@@ -67,12 +67,12 @@ export function DashboardHeader({ breadcrumbs = [], userEmail, userName }: Dashb
               {item.href ? (
                 <a
                   href={item.href}
-                  className="text-gray-500 hover:text-navy-900 transition-colors"
+                  className="text-gray-500 hover:text-gray-900 transition-colors"
                 >
                   {item.label}
                 </a>
               ) : (
-                <span className="font-medium text-navy-900">{item.label}</span>
+                <span className="font-medium text-gray-900">{item.label}</span>
               )}
             </div>
           ))}
@@ -85,7 +85,7 @@ export function DashboardHeader({ breadcrumbs = [], userEmail, userName }: Dashb
             variant="ghost"
             size="sm"
             onClick={toggleLanguage}
-            className="text-gray-600 hover:text-navy-900"
+            className="text-gray-600 hover:text-gray-900"
           >
             <Globe className="h-4 w-4 mr-2" />
             {lang === 'en' ? 'FR' : 'EN'}
@@ -95,8 +95,8 @@ export function DashboardHeader({ breadcrumbs = [], userEmail, userName }: Dashb
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="ghost" className="relative h-9 w-9 rounded-full">
-                <Avatar className="h-9 w-9 border-2 border-navy-100">
-                  <AvatarFallback className="bg-navy-100 text-navy-900 font-semibold">
+                <Avatar className="h-9 w-9 border-2 border-primary-100">
+                  <AvatarFallback className="bg-primary-100 text-primary-900 font-semibold">
                     {initials}
                   </AvatarFallback>
                 </Avatar>
@@ -114,12 +114,12 @@ export function DashboardHeader({ breadcrumbs = [], userEmail, userName }: Dashb
               <DropdownMenuSeparator />
               <DropdownMenuItem onClick={() => router.push('/dashboard/profile')}>
                 <User className="mr-2 h-4 w-4" />
-                <span>{t('profile')}</span>
+                <span>{t.nav.profile}</span>
               </DropdownMenuItem>
               <DropdownMenuSeparator />
               <DropdownMenuItem onClick={handleLogout} className="text-red-600">
                 <LogOut className="mr-2 h-4 w-4" />
-                <span>{t('logout')}</span>
+                <span>{t.nav.logout}</span>
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>

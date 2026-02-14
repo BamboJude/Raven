@@ -106,7 +106,7 @@ export function DataTable<T extends Record<string, any>>({
               {columns.map((column, index) => (
                 <TableHead
                   key={index}
-                  className={cn('font-semibold text-navy-900', column.className)}
+                  className={cn('font-semibold text-gray-900', column.className)}
                 >
                   {column.sortable ? (
                     <Button

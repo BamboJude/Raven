@@ -21,7 +21,7 @@ export function StatCard({ title, value, icon: Icon, trend, className }: StatCar
         <div className="flex items-start justify-between">
           <div className="flex-1">
             <p className="text-sm font-medium text-gray-600 mb-1">{title}</p>
-            <h3 className="text-3xl font-bold text-navy-900">{value}</h3>
+            <h3 className="text-3xl font-bold text-gray-900">{value}</h3>
             {trend && (
               <div className="flex items-center mt-3">
                 <span
@@ -36,8 +36,8 @@ export function StatCard({ title, value, icon: Icon, trend, className }: StatCar
               </div>
             )}
           </div>
-          <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-navy-50">
-            <Icon className="h-6 w-6 text-navy-600" />
+          <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-primary-50">
+            <Icon className="h-6 w-6 text-primary-600" />
           </div>
         </div>
       </CardContent>
