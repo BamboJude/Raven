@@ -160,59 +160,147 @@ export default function Home() {
 
           {/* Hero Image / Demo Preview */}
           <div className="mt-20 max-w-5xl mx-auto animate-fade-in-up animation-delay-800">
-            <div className="relative rounded-2xl overflow-hidden shadow-2xl border-8 border-white bg-gradient-to-br from-gray-50 to-white">
+            <div className="relative rounded-2xl overflow-hidden shadow-2xl border-8 border-white bg-white">
               {/* Dashboard Mockup */}
-              <div className="aspect-video bg-gradient-to-br from-primary-50 via-white to-orange-50 p-8">
-                {/* Mock Dashboard Header */}
-                <div className="bg-white rounded-lg shadow-lg p-6 mb-4">
-                  <div className="flex items-center justify-between mb-4">
+              <div className="bg-gradient-to-br from-gray-50 to-white p-6">
+                {/* Dashboard Header */}
+                <div className="bg-white rounded-xl shadow-md p-4 mb-6 border border-gray-100">
+                  <div className="flex items-center justify-between">
                     <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 bg-primary-600 rounded-lg"></div>
-                      <div className="space-y-2">
-                        <div className="h-4 w-32 bg-gray-200 rounded"></div>
-                        <div className="h-3 w-24 bg-gray-100 rounded"></div>
+                      <div className="w-10 h-10 bg-gradient-to-br from-primary-500 to-primary-600 rounded-lg flex items-center justify-center">
+                        <span className="text-white font-bold text-lg">R</span>
+                      </div>
+                      <div>
+                        <h3 className="text-sm font-semibold text-gray-900">Raven Dashboard</h3>
+                        <p className="text-xs text-gray-500">Live Conversations</p>
                       </div>
                     </div>
-                    <div className="flex gap-2">
-                      <div className="h-9 w-20 bg-gray-100 rounded"></div>
-                      <div className="h-9 w-9 bg-primary-100 rounded-full"></div>
-                    </div>
-                  </div>
-                  {/* Mock Stats */}
-                  <div className="grid grid-cols-3 gap-4">
-                    <div className="bg-primary-50 rounded-lg p-4">
-                      <div className="h-3 w-20 bg-primary-200 rounded mb-2"></div>
-                      <div className="h-6 w-16 bg-primary-300 rounded"></div>
-                    </div>
-                    <div className="bg-orange-50 rounded-lg p-4">
-                      <div className="h-3 w-20 bg-orange-200 rounded mb-2"></div>
-                      <div className="h-6 w-16 bg-orange-300 rounded"></div>
-                    </div>
-                    <div className="bg-green-50 rounded-lg p-4">
-                      <div className="h-3 w-20 bg-green-200 rounded mb-2"></div>
-                      <div className="h-6 w-16 bg-green-300 rounded"></div>
+                    <div className="flex items-center gap-2">
+                      <span className="text-xs text-gray-500">Online</span>
+                      <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
                     </div>
                   </div>
                 </div>
-                {/* Mock Chat */}
-                <div className="bg-white rounded-lg shadow-lg p-6">
-                  <div className="space-y-3">
-                    <div className="flex gap-2 items-start">
-                      <div className="w-8 h-8 bg-primary-100 rounded-full flex-shrink-0"></div>
-                      <div className="bg-gray-100 rounded-2xl rounded-tl-sm px-4 py-2 max-w-xs">
-                        <div className="h-3 w-40 bg-gray-200 rounded"></div>
+
+                {/* Stats Cards */}
+                <div className="grid grid-cols-3 gap-3 mb-6">
+                  <div className="bg-white rounded-xl shadow-sm p-4 border border-primary-100">
+                    <div className="flex items-center gap-2 mb-2">
+                      <MessageCircle className="w-4 h-4 text-primary-600" />
+                      <p className="text-xs text-gray-600 font-medium">Conversations</p>
+                    </div>
+                    <p className="text-2xl font-bold text-gray-900">142</p>
+                    <p className="text-xs text-green-600 mt-1">↑ 12% this week</p>
+                  </div>
+                  <div className="bg-white rounded-xl shadow-sm p-4 border border-orange-100">
+                    <div className="flex items-center gap-2 mb-2">
+                      <Clock className="w-4 h-4 text-orange-600" />
+                      <p className="text-xs text-gray-600 font-medium">Avg Response</p>
+                    </div>
+                    <p className="text-2xl font-bold text-gray-900">1.2s</p>
+                    <p className="text-xs text-green-600 mt-1">↓ 30% faster</p>
+                  </div>
+                  <div className="bg-white rounded-xl shadow-sm p-4 border border-green-100">
+                    <div className="flex items-center gap-2 mb-2">
+                      <Users className="w-4 h-4 text-green-600" />
+                      <p className="text-xs text-gray-600 font-medium">Satisfaction</p>
+                    </div>
+                    <p className="text-2xl font-bold text-gray-900">98%</p>
+                    <p className="text-xs text-green-600 mt-1">↑ 5% improvement</p>
+                  </div>
+                </div>
+
+                {/* Chat Interface */}
+                <div className="bg-white rounded-xl shadow-md border border-gray-200 overflow-hidden">
+                  {/* Chat Header */}
+                  <div className="bg-gradient-to-r from-primary-600 to-primary-500 px-4 py-3 flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                      <div className="w-8 h-8 bg-white/20 backdrop-blur rounded-full flex items-center justify-center">
+                        <span className="text-white font-semibold text-sm">S</span>
+                      </div>
+                      <div>
+                        <p className="text-white font-semibold text-sm">Sarah Johnson</p>
+                        <p className="text-primary-100 text-xs">Active now</p>
                       </div>
                     </div>
-                    <div className="flex gap-2 items-start justify-end">
-                      <div className="bg-primary-600 rounded-2xl rounded-tr-sm px-4 py-2 max-w-xs">
-                        <div className="h-3 w-32 bg-primary-400 rounded"></div>
+                    <div className="w-2 h-2 bg-green-400 rounded-full"></div>
+                  </div>
+
+                  {/* Chat Messages */}
+                  <div className="p-4 space-y-4 bg-gradient-to-b from-gray-50 to-white min-h-[280px]">
+                    {/* AI Message */}
+                    <div className="flex gap-3 items-start">
+                      <div className="w-8 h-8 bg-gradient-to-br from-primary-500 to-primary-600 rounded-full flex items-center justify-center flex-shrink-0">
+                        <span className="text-white font-bold text-xs">R</span>
                       </div>
+                      <div>
+                        <div className="bg-white rounded-2xl rounded-tl-sm px-4 py-3 shadow-sm border border-gray-100 max-w-md">
+                          <p className="text-sm text-gray-800">
+                            Hello! 👋 Welcome to Raven Support. How can I help you today?
+                          </p>
+                        </div>
+                        <p className="text-xs text-gray-400 mt-1 ml-2">10:23 AM</p>
+                      </div>
+                    </div>
+
+                    {/* User Message */}
+                    <div className="flex gap-3 items-start justify-end">
+                      <div>
+                        <div className="bg-gradient-to-br from-primary-600 to-primary-500 rounded-2xl rounded-tr-sm px-4 py-3 shadow-md max-w-md">
+                          <p className="text-sm text-white">
+                            I'd like to book an appointment for next week
+                          </p>
+                        </div>
+                        <p className="text-xs text-gray-400 mt-1 mr-2 text-right">10:24 AM</p>
+                      </div>
+                    </div>
+
+                    {/* AI Response with Slots */}
+                    <div className="flex gap-3 items-start">
+                      <div className="w-8 h-8 bg-gradient-to-br from-primary-500 to-primary-600 rounded-full flex items-center justify-center flex-shrink-0">
+                        <span className="text-white font-bold text-xs">R</span>
+                      </div>
+                      <div>
+                        <div className="bg-white rounded-2xl rounded-tl-sm px-4 py-3 shadow-sm border border-gray-100 max-w-md">
+                          <p className="text-sm text-gray-800 mb-3">
+                            Perfect! I have several available time slots. Please choose one:
+                          </p>
+                          <div className="space-y-2">
+                            <button className="w-full bg-primary-50 hover:bg-primary-100 text-primary-900 px-3 py-2 rounded-lg text-xs font-medium transition-colors border border-primary-200 text-left">
+                              📅 Monday, Feb 19 at 10:00 AM
+                            </button>
+                            <button className="w-full bg-primary-50 hover:bg-primary-100 text-primary-900 px-3 py-2 rounded-lg text-xs font-medium transition-colors border border-primary-200 text-left">
+                              📅 Tuesday, Feb 20 at 2:30 PM
+                            </button>
+                            <button className="w-full bg-primary-50 hover:bg-primary-100 text-primary-900 px-3 py-2 rounded-lg text-xs font-medium transition-colors border border-primary-200 text-left">
+                              📅 Wednesday, Feb 21 at 11:00 AM
+                            </button>
+                          </div>
+                        </div>
+                        <p className="text-xs text-gray-400 mt-1 ml-2">10:24 AM • Read ✓✓</p>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Chat Input */}
+                  <div className="border-t border-gray-200 p-3 bg-white">
+                    <div className="flex items-center gap-2 bg-gray-50 rounded-lg px-3 py-2 border border-gray-200">
+                      <input
+                        type="text"
+                        placeholder="Type your message..."
+                        className="flex-1 bg-transparent text-sm text-gray-600 outline-none"
+                        disabled
+                      />
+                      <button className="text-primary-600 p-1.5 hover:bg-primary-50 rounded-lg transition-colors">
+                        <ArrowRight className="w-4 h-4" />
+                      </button>
                     </div>
                   </div>
                 </div>
               </div>
-              {/* Floating stats */}
-              <div className="absolute top-6 left-6 bg-white rounded-xl shadow-xl p-4 animate-float">
+
+              {/* Floating stats badge */}
+              <div className="absolute top-6 right-6 bg-white rounded-xl shadow-xl p-4 animate-float border-2 border-green-100">
                 <div className="flex items-center gap-3">
                   <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
                     <TrendingUp className="w-6 h-6 text-green-600" />
