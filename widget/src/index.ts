@@ -869,6 +869,10 @@ class RavenWidget {
         // Human agent - show orange indicator
         statusDot.style.background = "#FF9500";
         statusText.innerHTML = `${AGENT_ICON} ${this.t.humanAgent}`;
+      } else if (!this.isBusinessOnline) {
+        // Business is offline - show offline status
+        statusDot.style.background = "#8E8E93";
+        statusText.textContent = this.t.offline;
       } else {
         // AI assistant - show green indicator
         statusDot.style.background = "#34C759";
