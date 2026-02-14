@@ -213,7 +213,16 @@ async def get_chart_data(business_id: str, days: int = 7, authorization: Optiona
         daily_counts[date.isoformat()] = 0
 
     for conv in (conversations.data or []):
-        conv_date = datetime.fromisoformat(conv["started_at"].replace('Z', '+00:00')).date()
+        # Handle ISO format strings with varying microsecond precision
+        timestamp = conv["started_at"].replace('Z', '+00:00')
+        # Parse timestamp - handle edge case where microseconds have odd digit count
+        try:
+            conv_date = datetime.fromisoformat(timestamp).date()
+        except ValueError:
+            # Fallback: strip microseconds if parsing fails
+            timestamp = timestamp.split('.')[0] + '+00:00' if '.' in timestamp else timestamp
+            conv_date = datetime.fromisoformat(timestamp).date()
+
         date_key = conv_date.isoformat()
         if date_key in daily_counts:
             daily_counts[date_key] += 1

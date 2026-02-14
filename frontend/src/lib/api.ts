@@ -265,8 +265,8 @@ export interface Appointment {
   business_id: string;
   conversation_id?: string;
   customer_name: string;
-  customer_email?: string;
-  customer_phone: string;
+  customer_email: string; // Required after migration 007
+  customer_phone?: string; // Optional after migration 007
   appointment_date: string;
   appointment_time: string;
   duration_minutes: number;
@@ -322,8 +322,8 @@ export const appointmentsAPI = {
   create: (data: {
     business_id: string;
     customer_name: string;
-    customer_phone: string;
-    customer_email?: string;
+    customer_email: string; // Required after migration 007
+    customer_phone?: string; // Optional after migration 007
     appointment_date: string;
     appointment_time: string;
     duration_minutes?: number;
