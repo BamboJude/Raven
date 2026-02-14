@@ -7,6 +7,7 @@ import { supabase } from "@/lib/supabase";
 import { businessAPI, type Business } from "@/lib/api";
 import { useLanguage, LanguageToggle } from "@/components/LanguageProvider";
 import { ChatToggle } from "@/components/ChatToggle";
+import { RavenIcon } from "@/components/shared/RavenIcon";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
 
@@ -91,11 +92,9 @@ export default function DashboardPage() {
       {/* Header */}
       <header className="bg-white border-b">
         <div className="container mx-auto px-4 py-4 flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <div className="w-8 h-8 bg-primary-600 rounded-lg flex items-center justify-center">
-              <span className="text-white font-bold">R</span>
-            </div>
-            <span className="text-xl font-bold text-gray-900">Raven Support</span>
+          <div className="flex items-center gap-3">
+            <RavenIcon size={40} className="text-primary-500" />
+            <span className="text-xl font-bold text-gray-900">Raven</span>
           </div>
 
           <div className="flex items-center gap-4">
