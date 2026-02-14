@@ -273,7 +273,7 @@ class RavenWidget {
     // Powered by
     const poweredBy = document.createElement("div");
     poweredBy.id = "raven-powered-by";
-    poweredBy.innerHTML = `${this.t.poweredBy} <a href="https://raven.cm" target="_blank">Raven</a>`;
+    poweredBy.innerHTML = `${this.t.poweredBy} <a href="https://raven-bjxkx3nc2-bambo-judes-projects.vercel.app" target="_blank">Raven</a>`;
 
     // Assemble chat window
     chatWindow.appendChild(header);
