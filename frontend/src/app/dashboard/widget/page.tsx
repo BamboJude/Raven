@@ -6,6 +6,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { supabase } from "@/lib/supabase";
 import { businessAPI } from "@/lib/api";
 import { useLanguage, LanguageToggle } from "@/components/LanguageProvider";
+import { RavenIcon } from "@/components/shared/RavenIcon";
 import { ChatToggle } from "@/components/ChatToggle";
 
 export default function WidgetPage() {
@@ -75,10 +76,8 @@ export default function WidgetPage() {
     <div className="min-h-screen bg-gray-50">
       <header className="bg-white border-b">
         <div className="container mx-auto px-4 py-4 flex items-center justify-between">
-          <Link href="/dashboard" className="flex items-center gap-2">
-            <div className="w-8 h-8 bg-primary-600 rounded-lg flex items-center justify-center">
-              <span className="text-white font-bold">R</span>
-            </div>
+          <Link href="/dashboard" className="flex items-center gap-3">
+            <RavenIcon size={40} className="text-primary-500" />
             <span className="text-xl font-bold text-gray-900">Raven</span>
           </Link>
           <div className="flex items-center gap-4">
