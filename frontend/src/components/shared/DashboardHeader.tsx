@@ -27,7 +27,7 @@ interface DashboardHeaderProps {
 
 export function DashboardHeader({ breadcrumbs = [], userEmail, userName }: DashboardHeaderProps) {
   const router = useRouter();
-  const { language, setLanguage, t } = useLanguage();
+  const { lang, setLang, t } = useLanguage();
 
   const handleLogout = () => {
     // Clear session and redirect to login
@@ -36,7 +36,7 @@ export function DashboardHeader({ breadcrumbs = [], userEmail, userName }: Dashb
   };
 
   const toggleLanguage = () => {
-    setLanguage(language === 'en' ? 'fr' : 'en');
+    setLang(lang === 'en' ? 'fr' : 'en');
   };
 
   const initials = userName
@@ -88,7 +88,7 @@ export function DashboardHeader({ breadcrumbs = [], userEmail, userName }: Dashb
             className="text-gray-600 hover:text-navy-900"
           >
             <Globe className="h-4 w-4 mr-2" />
-            {language === 'en' ? 'FR' : 'EN'}
+            {lang === 'en' ? 'FR' : 'EN'}
           </Button>
 
           {/* User Menu */}
