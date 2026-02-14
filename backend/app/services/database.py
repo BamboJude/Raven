@@ -368,26 +368,38 @@ class DatabaseService:
         self,
         business_id: str,
         customer_name: str,
-        customer_phone: str,
+        customer_email: str,
         appointment_date: str,
         appointment_time: str,
-        customer_email: str = None,
+        customer_phone: str = None,
         duration_minutes: int = 60,
         service_type: str = None,
         notes: str = None,
         conversation_id: str = None,
     ) -> Optional[dict]:
-        """Create a new appointment."""
+        """Create a new appointment.
+
+        Args:
+            business_id: UUID of the business
+            customer_name: Customer's full name (required)
+            customer_email: Customer's email address (required)
+            appointment_date: Date in YYYY-MM-DD format (required)
+            appointment_time: Time in HH:MM format (required)
+            customer_phone: Customer's phone number (optional)
+            duration_minutes: Duration of appointment in minutes
+            service_type: Type of service/appointment
+            notes: Additional notes
+            conversation_id: Associated conversation UUID
+        """
         data = {
             "business_id": business_id,
             "customer_name": customer_name,
-            "customer_phone": customer_phone,
+            "customer_email": customer_email,  # Always include (NOT NULL in DB)
+            "customer_phone": customer_phone,  # Can be None (nullable in DB after migration 007)
             "appointment_date": appointment_date,
             "appointment_time": appointment_time,
             "duration_minutes": duration_minutes,
         }
-        if customer_email:
-            data["customer_email"] = customer_email
         if service_type:
             data["service_type"] = service_type
         if notes:

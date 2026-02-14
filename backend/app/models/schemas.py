@@ -252,8 +252,8 @@ class AppointmentCreate(BaseModel):
     """Request to create an appointment."""
     business_id: str = Field(..., description="Business ID")
     customer_name: str = Field(..., min_length=1, max_length=200)
-    customer_email: Optional[str] = Field(None, max_length=200)
-    customer_phone: str = Field(..., min_length=1, max_length=50)
+    customer_email: str = Field(..., min_length=1, max_length=200, description="Customer email (required)")
+    customer_phone: Optional[str] = Field(None, max_length=50, description="Customer phone (optional)")
     appointment_date: str = Field(..., description="Date in YYYY-MM-DD format")
     appointment_time: str = Field(..., description="Time in HH:MM format")
     duration_minutes: int = Field(default=60, ge=15, le=480)

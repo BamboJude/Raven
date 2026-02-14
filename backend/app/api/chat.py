@@ -299,10 +299,10 @@ async def send_message(request: ChatRequest):
                 appointment = db.create_appointment(
                     business_id=request.business_id,
                     customer_name=appointment_info["name"],
-                    customer_phone=appointment_info["phone"] or "",
-                    customer_email=appointment_info.get("email"),
+                    customer_email=appointment_info["email"],  # Required field
                     appointment_date=appointment_info["date"],
                     appointment_time=appointment_info["time"],
+                    customer_phone=appointment_info.get("phone"),  # Optional field
                     service_type=appointment_info.get("service"),
                     notes=appointment_info.get("notes"),
                     duration_minutes=availability.get("default_duration_minutes", 60) if availability else 60,
