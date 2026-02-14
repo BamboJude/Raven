@@ -328,4 +328,4 @@ For issues or questions:
 
 ---
 
-**Built with ❤️ for African businesses**
+**Built with ❤️**
