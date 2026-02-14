@@ -276,8 +276,8 @@ class AppointmentResponse(BaseModel):
     business_id: str
     conversation_id: Optional[str]
     customer_name: str
-    customer_email: Optional[str]
-    customer_phone: str
+    customer_email: str  # Required after migration 008
+    customer_phone: Optional[str]  # Optional after migration 008
     appointment_date: str
     appointment_time: str
     duration_minutes: int
