@@ -2,163 +2,261 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Custom styles for Raven */
+/* Modern Design System - Raven */
 
-body {
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
-    Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+@layer base {
+  /* CSS Variables for shadcn/ui theming */
+  :root {
+    /* Sky Blue Primary */
+    --primary: 199 89% 48%; /* primary-500: #0ea5e9 converted to HSL */
+    --primary-foreground: 0 0% 100%;
+
+    /* Orange Accent */
+    --accent: 24 95% 53%; /* orange-500: #f97316 */
+    --accent-foreground: 0 0% 100%;
+
+    /* Background & Foreground */
+    --background: 0 0% 100%;
+    --foreground: 222 47% 11%; /* dark gray */
+
+    /* Card */
+    --card: 0 0% 100%;
+    --card-foreground: 222 47% 11%;
+
+    /* Popover */
+    --popover: 0 0% 100%;
+    --popover-foreground: 222 47% 11%;
+
+    /* Secondary */
+    --secondary: 210 40% 96%; /* primary-50 */
+    --secondary-foreground: 222 47% 11%;
+
+    /* Muted */
+    --muted: 0 0% 96.1%;
+    --muted-foreground: 0 0% 45.1%;
+
+    /* Destructive */
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 0 0% 98%;
+
+    /* Border, Input, Ring */
+    --border: 0 0% 89.8%;
+    --input: 0 0% 89.8%;
+    --ring: 199 89% 48%;
+
+    /* Chart Colors */
+    --chart-1: 199 89% 48%; /* primary-500 */
+    --chart-2: 24 95% 53%; /* orange-500 */
+    --chart-3: 142 71% 45%; /* green */
+    --chart-4: 250 84% 54%; /* purple */
+    --chart-5: 339 90% 51%; /* pink */
+
+    /* Border Radius */
+    --radius: 0.5rem; /* 8px */
+  }
+
+  .dark {
+    --background: 222 47% 11%;
+    --foreground: 0 0% 98%;
+    --card: 222 47% 15%;
+    --card-foreground: 0 0% 98%;
+    --popover: 222 47% 15%;
+    --popover-foreground: 0 0% 98%;
+    --primary: 199 89% 48%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 217 33% 17%;
+    --secondary-foreground: 0 0% 98%;
+    --muted: 0 0% 20%;
+    --muted-foreground: 0 0% 63.9%;
+    --accent: 24 95% 53%;
+    --accent-foreground: 0 0% 100%;
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 0 0% 25%;
+    --input: 0 0% 25%;
+    --ring: 0 0% 83.1%;
+    --chart-1: 199 89% 58%;
+    --chart-2: 24 95% 63%;
+    --chart-3: 142 71% 55%;
+    --chart-4: 250 84% 64%;
+    --chart-5: 339 90% 61%;
+  }
+
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground font-sans;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  /* Improved readability - JotForm style */
+  h1, h2, h3, h4, h5, h6 {
+    line-height: 1.3;
+    font-weight: 600;
+  }
+
+  p {
+    line-height: 1.7;
+  }
 }
 
-/* Form input styles */
-.input {
-  @apply w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none transition-all;
-}
+/* Custom utility classes - Updated for JotForm primary/orange theme */
 
-.input:disabled {
-  @apply bg-gray-100 cursor-not-allowed;
-}
+@layer components {
+  /* Form input styles */
+  .input {
+    @apply w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-primary-600 focus:border-transparent outline-none transition-all;
+  }
 
-/* Button styles */
-.btn {
-  @apply px-4 py-2 rounded-lg font-medium transition-all focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed;
-}
+  .input:disabled {
+    @apply bg-gray-100 cursor-not-allowed;
+  }
 
-.btn-primary {
-  @apply btn bg-primary-600 text-white hover:bg-primary-700 focus:ring-primary-500;
-}
+  /* Button styles */
+  .btn {
+    @apply px-4 py-2 rounded-md font-medium transition-all focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed;
+  }
 
-.btn-secondary {
-  @apply btn bg-gray-200 text-gray-800 hover:bg-gray-300 focus:ring-gray-500;
-}
+  .btn-primary {
+    @apply btn bg-primary-900 text-white hover:bg-primary-800 focus:ring-primary-600 shadow-jf-sm hover:shadow-jf-md;
+  }
 
-.btn-danger {
-  @apply btn bg-red-600 text-white hover:bg-red-700 focus:ring-red-500;
-}
+  .btn-accent {
+    @apply btn bg-orange-500 text-white hover:bg-orange-600 focus:ring-orange-500 shadow-jf-sm hover:shadow-jf-md;
+  }
 
-/* Card styles */
-.card {
-  @apply bg-white rounded-xl shadow-sm border border-gray-200 p-6;
-}
+  .btn-secondary {
+    @apply btn bg-gray-200 text-gray-800 hover:bg-gray-300 focus:ring-gray-500;
+  }
 
-/* Link styles */
-.link {
-  @apply text-primary-600 hover:text-primary-700 underline-offset-4 hover:underline;
-}
+  .btn-danger {
+    @apply btn bg-red-600 text-white hover:bg-red-700 focus:ring-red-500;
+  }
 
-/* Appointment & Availability specific styles */
+  /* Card styles */
+  .card {
+    @apply bg-white rounded-lg shadow-jf-sm border border-gray-200 p-6 hover:shadow-jf-md transition-shadow;
+  }
 
-/* Time input styling */
-input[type="time"] {
-  @apply input;
-}
+  /* Link styles */
+  .link {
+    @apply text-primary-600 hover:text-primary-800 underline-offset-4 hover:underline transition-colors;
+  }
 
-input[type="number"] {
-  @apply input;
-}
+  /* Time input styling */
+  input[type="time"],
+  input[type="number"] {
+    @apply input;
+  }
 
-/* Checkbox styling */
-input[type="checkbox"] {
-  @apply w-4 h-4 text-primary-600 border-gray-300 rounded focus:ring-2 focus:ring-primary-500 cursor-pointer;
-}
+  /* Checkbox styling */
+  input[type="checkbox"] {
+    @apply w-4 h-4 text-primary-600 border-gray-300 rounded focus:ring-2 focus:ring-primary-500 cursor-pointer;
+  }
 
-/* Status badge base */
-.status-badge {
-  @apply inline-flex items-center px-3 py-1 rounded-full text-xs font-medium;
-}
+  /* Status badge base */
+  .status-badge {
+    @apply inline-flex items-center px-3 py-1 rounded-full text-xs font-medium;
+  }
 
-/* Filter button styles */
-.filter-btn {
-  @apply px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 border;
-}
+  /* Filter button styles */
+  .filter-btn {
+    @apply px-4 py-2 rounded-md text-sm font-medium transition-all duration-200 border;
+  }
 
-.filter-btn-active {
-  @apply filter-btn bg-primary-600 text-white border-primary-600 shadow-md;
-}
+  .filter-btn-active {
+    @apply filter-btn bg-primary-900 text-white border-primary-900 shadow-jf-sm;
+  }
 
-.filter-btn-inactive {
-  @apply filter-btn bg-white text-gray-700 border-gray-200 hover:bg-gray-50 hover:border-gray-300;
-}
+  .filter-btn-inactive {
+    @apply filter-btn bg-white text-gray-700 border-gray-200 hover:bg-gray-50 hover:border-gray-300;
+  }
 
-/* Modal overlay */
-.modal-overlay {
-  @apply fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50 backdrop-blur-sm;
-}
+  /* Modal overlay */
+  .modal-overlay {
+    @apply fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50 backdrop-blur-sm;
+  }
 
-.modal-content {
-  @apply bg-white rounded-xl max-w-md w-full p-6 shadow-2xl transform transition-all;
-}
+  .modal-content {
+    @apply bg-white rounded-lg max-w-md w-full p-6 shadow-jf-lg transform transition-all;
+  }
 
-/* Appointment card hover effect */
-.appointment-card {
-  @apply card hover:shadow-lg hover:border-primary-200 transition-all duration-200 cursor-pointer;
-}
+  /* Appointment card hover effect */
+  .appointment-card {
+    @apply card hover:shadow-jf-md hover:border-primary-200 transition-all duration-200 cursor-pointer;
+  }
 
-/* Schedule day card */
-.schedule-day {
-  @apply border border-gray-200 rounded-xl p-4 transition-all duration-200 hover:border-gray-300 bg-white;
-}
+  /* Schedule day card */
+  .schedule-day {
+    @apply border border-gray-200 rounded-lg p-4 transition-all duration-200 hover:border-gray-300 bg-white;
+  }
 
-.schedule-day-disabled {
-  @apply border border-gray-100 rounded-xl p-4 bg-gray-50;
-}
+  .schedule-day-disabled {
+    @apply border border-gray-100 rounded-lg p-4 bg-gray-50;
+  }
 
-/* Time slot row */
-.time-slot {
-  @apply flex items-center gap-2 p-2 rounded-lg hover:bg-gray-50 transition-colors;
-}
+  /* Time slot row */
+  .time-slot {
+    @apply flex items-center gap-2 p-2 rounded-md hover:bg-gray-50 transition-colors;
+  }
 
-/* Icon button */
-.icon-btn {
-  @apply p-2 rounded-lg transition-all duration-200 hover:bg-gray-100 focus:ring-2 focus:ring-primary-500 focus:outline-none;
-}
+  /* Icon button */
+  .icon-btn {
+    @apply p-2 rounded-md transition-all duration-200 hover:bg-gray-100 focus:ring-2 focus:ring-primary-500 focus:outline-none;
+  }
 
-.icon-btn-danger {
-  @apply p-2 rounded-lg transition-all duration-200 hover:bg-red-50 text-red-600 hover:text-red-700 focus:ring-2 focus:ring-red-500 focus:outline-none;
-}
+  .icon-btn-danger {
+    @apply p-2 rounded-md transition-all duration-200 hover:bg-red-50 text-red-600 hover:text-red-700 focus:ring-2 focus:ring-red-500 focus:outline-none;
+  }
 
-/* Add slot button */
-.add-slot-btn {
-  @apply text-sm font-medium text-primary-600 hover:text-primary-700 transition-colors px-3 py-1 rounded-lg hover:bg-primary-50;
-}
+  /* Add slot button */
+  .add-slot-btn {
+    @apply text-sm font-medium text-primary-600 hover:text-primary-800 transition-colors px-3 py-1 rounded-md hover:bg-primary-50;
+  }
 
-/* Back button */
-.back-btn {
-  @apply text-gray-500 hover:text-gray-700 transition-colors p-2 rounded-lg hover:bg-gray-100;
-}
+  /* Back button */
+  .back-btn {
+    @apply text-gray-500 hover:text-gray-700 transition-colors p-2 rounded-md hover:bg-gray-100;
+  }
 
-/* Export button */
-.export-btn {
-  @apply btn-secondary text-sm flex items-center gap-2 hover:shadow-md;
-}
+  /* Export button */
+  .export-btn {
+    @apply btn-secondary text-sm flex items-center gap-2 hover:shadow-jf-sm;
+  }
 
-/* Empty state */
-.empty-state {
-  @apply card text-center py-12;
-}
+  /* Empty state */
+  .empty-state {
+    @apply card text-center py-12;
+  }
 
-.empty-state-icon {
-  @apply w-20 h-20 bg-primary-100 rounded-full flex items-center justify-center mx-auto mb-4;
-}
+  .empty-state-icon {
+    @apply w-20 h-20 bg-primary-100 rounded-full flex items-center justify-center mx-auto mb-4;
+  }
 
-/* Status modal button */
-.status-option {
-  @apply w-full px-4 py-3 rounded-lg text-left font-medium transition-all duration-200 border-2;
-}
+  /* Status modal button */
+  .status-option {
+    @apply w-full px-4 py-3 rounded-md text-left font-medium transition-all duration-200 border-2;
+  }
 
-.status-option-selected {
-  @apply status-option bg-primary-50 text-primary-900 border-primary-600 shadow-sm;
-}
+  .status-option-selected {
+    @apply status-option bg-primary-50 text-primary-900 border-primary-600 shadow-jf-sm;
+  }
 
-.status-option-unselected {
-  @apply status-option bg-gray-50 text-gray-700 border-transparent hover:bg-gray-100 hover:border-gray-200;
-}
+  .status-option-unselected {
+    @apply status-option bg-gray-50 text-gray-700 border-transparent hover:bg-gray-100 hover:border-gray-200;
+  }
 
-/* Quick access card */
-.quick-access-card {
-  @apply card hover:border-primary-300 hover:shadow-md transition-all duration-200 cursor-pointer;
-}
+  /* Quick access card */
+  .quick-access-card {
+    @apply card hover:border-primary-300 hover:shadow-jf-md transition-all duration-200 cursor-pointer;
+  }
 
-/* Loading spinner */
-.spinner {
-  @apply animate-spin rounded-full border-b-2 border-primary-600;
+  /* Loading spinner */
+  .spinner {
+    @apply animate-spin rounded-full border-b-2 border-primary-600;
+  }
 }
