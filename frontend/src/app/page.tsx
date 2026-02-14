@@ -5,6 +5,7 @@ import Script from "next/script";
 import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase";
 import { useLanguage, LanguageToggle } from "@/components/LanguageProvider";
+import { RavenIconSimple, RavenLogo } from "@/components/shared/RavenIcon";
 import {
   MessageCircle,
   Clock,
@@ -48,14 +49,7 @@ export default function Home() {
       <header className="fixed top-0 w-full bg-white/80 backdrop-blur-lg border-b border-gray-100 z-50">
         <div className="container mx-auto px-4 py-4">
           <nav className="flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <div className="w-10 h-10 bg-gradient-to-br from-primary-500 to-primary-600 rounded-xl flex items-center justify-center shadow-lg">
-                <span className="text-white font-bold text-xl">R</span>
-              </div>
-              <span className="text-2xl font-bold bg-gradient-to-r from-primary-600 to-primary-500 bg-clip-text text-transparent">
-                Raven
-              </span>
-            </div>
+            <RavenLogo className="text-primary-600" showText={true} />
 
             <div className="hidden md:flex items-center gap-8">
               <a href="#features" className="text-gray-600 hover:text-primary-600 transition-colors">
@@ -167,9 +161,7 @@ export default function Home() {
                 <div className="bg-white rounded-xl shadow-md p-4 mb-6 border border-gray-100">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 bg-gradient-to-br from-primary-500 to-primary-600 rounded-lg flex items-center justify-center">
-                        <span className="text-white font-bold text-lg">R</span>
-                      </div>
+                      <RavenIconSimple size={40} className="text-primary-600" />
                       <div>
                         <h3 className="text-sm font-semibold text-gray-900">Raven Dashboard</h3>
                         <p className="text-xs text-gray-500">Live Conversations</p>
@@ -230,9 +222,7 @@ export default function Home() {
                   <div className="p-4 space-y-4 bg-gradient-to-b from-gray-50 to-white min-h-[280px]">
                     {/* AI Message */}
                     <div className="flex gap-3 items-start">
-                      <div className="w-8 h-8 bg-gradient-to-br from-primary-500 to-primary-600 rounded-full flex items-center justify-center flex-shrink-0">
-                        <span className="text-white font-bold text-xs">R</span>
-                      </div>
+                      <RavenIconSimple size={32} className="text-primary-600 flex-shrink-0" />
                       <div>
                         <div className="bg-white rounded-2xl rounded-tl-sm px-4 py-3 shadow-sm border border-gray-100 max-w-md">
                           <p className="text-sm text-gray-800">
@@ -257,9 +247,7 @@ export default function Home() {
 
                     {/* AI Response with Slots */}
                     <div className="flex gap-3 items-start">
-                      <div className="w-8 h-8 bg-gradient-to-br from-primary-500 to-primary-600 rounded-full flex items-center justify-center flex-shrink-0">
-                        <span className="text-white font-bold text-xs">R</span>
-                      </div>
+                      <RavenIconSimple size={32} className="text-primary-600 flex-shrink-0" />
                       <div>
                         <div className="bg-white rounded-2xl rounded-tl-sm px-4 py-3 shadow-sm border border-gray-100 max-w-md">
                           <p className="text-sm text-gray-800 mb-3">
@@ -631,9 +619,7 @@ export default function Home() {
         <div className="container mx-auto px-4">
           <div className="flex flex-col md:flex-row items-center justify-between gap-6">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-gradient-to-br from-primary-500 to-primary-600 rounded-xl flex items-center justify-center shadow-lg">
-                <span className="text-white font-bold text-xl">R</span>
-              </div>
+              <RavenIconSimple size={40} className="text-primary-500" />
               <div>
                 <div className="font-bold text-white text-lg">Raven</div>
                 <div className="text-xs text-gray-400">AI Customer Support</div>
