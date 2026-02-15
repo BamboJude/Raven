@@ -276,25 +276,63 @@ class DatabaseService:
         )
         return result.data[0] if result.data else None
 
-    def create_team_member(self, business_id: str, email: str, role: str = "member") -> Optional[dict]:
-        """Create a new team member."""
-        result = self.client.table("team_members").insert({
+    def create_team_member(
+        self,
+        business_id: str,
+        email: str,
+        role: str = "member",
+        user_id: str = None,
+        full_name: str = None,
+        phone: str = None,
+        job_title: str = None,
+        status: str = "pending",
+    ) -> Optional[dict]:
+        """Create a new team member (supports both invite and direct creation)."""
+        insert_data = {
             "business_id": business_id,
             "email": email,
             "role": role,
-            "status": "pending",
-        }).execute()
+            "status": status,
+        }
+
+        # Add optional fields if provided
+        if user_id:
+            insert_data["user_id"] = user_id
+        if full_name:
+            insert_data["full_name"] = full_name
+        if phone:
+            insert_data["phone"] = phone
+        if job_title:
+            insert_data["job_title"] = job_title
+
+        result = self.client.table("team_members").insert(insert_data).execute()
         return result.data[0] if result.data else None
 
-    def update_team_member(self, member_id: str, role: str = None, avatar_url: str = None) -> Optional[dict]:
-        """Update a team member's role and/or avatar."""
+    def update_team_member(
+        self,
+        member_id: str,
+        role: str = None,
+        avatar_url: str = None,
+        full_name: str = None,
+        phone: str = None,
+        job_title: str = None,
+    ) -> Optional[dict]:
+        """Update a team member's profile fields."""
         updates = {}
         if role:
             updates["role"] = role
         if avatar_url is not None:  # Allow empty string to clear avatar
             updates["avatar_url"] = avatar_url
+        if full_name is not None:
+            updates["full_name"] = full_name
+        if phone is not None:
+            updates["phone"] = phone
+        if job_title is not None:
+            updates["job_title"] = job_title
+
         if not updates:
             return None
+
         result = (
             self.client.table("team_members")
             .update(updates)

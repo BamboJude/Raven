@@ -176,10 +176,28 @@ export interface TeamMember {
   email: string;
   role: "owner" | "admin" | "member";
   status: "pending" | "active";
-  user_id?: string;
-  avatar_url?: string;
+  user_id?: string | null;
+  full_name?: string | null;
+  phone?: string | null;
+  job_title?: string | null;
+  avatar_url?: string | null;
   created_at: string;
   updated_at: string;
+}
+
+export interface CreateTeamMemberAccount {
+  email: string;
+  full_name: string;
+  phone?: string;
+  job_title?: string;
+  role: "admin" | "member";
+}
+
+export interface TeamMemberCredentials {
+  email: string;
+  password: string;
+  member: TeamMember;
+  message: string;
 }
 
 // Team API
@@ -193,7 +211,28 @@ export const teamAPI = {
       body: JSON.stringify(data),
     }, token),
 
-  update: (businessId: string, memberId: string, data: { role?: string; avatar_url?: string }, token: string) =>
+  createAccount: (
+    businessId: string,
+    data: CreateTeamMemberAccount,
+    token: string
+  ): Promise<TeamMemberCredentials> =>
+    fetchAPI(`/api/team/${businessId}/members/create-account`, {
+      method: "POST",
+      body: JSON.stringify(data),
+    }, token),
+
+  update: (
+    businessId: string,
+    memberId: string,
+    data: {
+      role?: string;
+      avatar_url?: string;
+      full_name?: string;
+      phone?: string;
+      job_title?: string;
+    },
+    token: string
+  ) =>
     fetchAPI(`/api/team/${businessId}/members/${memberId}`, {
       method: "PATCH",
       body: JSON.stringify(data),

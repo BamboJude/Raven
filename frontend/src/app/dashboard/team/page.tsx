@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { supabase } from "@/lib/supabase";
-import { businessAPI, teamAPI, type TeamMember } from "@/lib/api";
+import { businessAPI, teamAPI, type TeamMember, type CreateTeamMemberAccount, type TeamMemberCredentials } from "@/lib/api";
 import { useLanguage, LanguageToggle } from "@/components/LanguageProvider";
 import { RavenIcon } from "@/components/shared/RavenIcon";
 import { Avatar } from "@/components/shared/Avatar";
@@ -30,6 +30,21 @@ export default function TeamPage() {
   const [editingAvatarId, setEditingAvatarId] = useState<string | null>(null);
   const [newAvatarUrl, setNewAvatarUrl] = useState("");
   const [updatingAvatar, setUpdatingAvatar] = useState(false);
+
+  // Create account
+  const [showCreateAccountForm, setShowCreateAccountForm] = useState(false);
+  const [createAccountData, setCreateAccountData] = useState({
+    email: "",
+    full_name: "",
+    phone: "",
+    job_title: "",
+    role: "member" as "admin" | "member",
+  });
+  const [creatingAccount, setCreatingAccount] = useState(false);
+
+  // Credentials modal
+  const [showCredentials, setShowCredentials] = useState(false);
+  const [credentials, setCredentials] = useState<{ email: string; password: string } | null>(null);
 
   const translations = {
     en: {
@@ -57,6 +72,22 @@ export default function TeamPage() {
       avatarPlaceholder: "https://example.com/avatar.jpg",
       updateAvatar: "Update",
       avatarSuccess: "Avatar updated",
+      createAccount: "Create Account",
+      createAccountTitle: "Create Team Member Account",
+      fullName: "Full Name",
+      fullNamePlaceholder: "John Doe",
+      phoneNumber: "Phone Number",
+      phonePlaceholder: "+237 6 XX XX XX XX",
+      jobTitle: "Job Title",
+      jobTitlePlaceholder: "Customer Support Agent",
+      createButton: "Create Account",
+      credentialsTitle: "Account Created Successfully",
+      credentialsWarning: "Save these credentials - they will not be shown again.",
+      credentialsCopy: "Copy to Clipboard",
+      credentialsCopied: "Copied!",
+      credentialsClose: "I've Saved the Credentials",
+      name: "Name",
+      createAccountInfo: "A secure password will be automatically generated. You'll receive the credentials once to share with the team member.",
     },
     fr: {
       title: "Membres de l'équipe",
@@ -83,6 +114,22 @@ export default function TeamPage() {
       avatarPlaceholder: "https://exemple.com/avatar.jpg",
       updateAvatar: "Mettre à jour",
       avatarSuccess: "Avatar mis à jour",
+      createAccount: "Créer un compte",
+      createAccountTitle: "Créer un compte de membre d'équipe",
+      fullName: "Nom complet",
+      fullNamePlaceholder: "Jean Dupont",
+      phoneNumber: "Numéro de téléphone",
+      phonePlaceholder: "+237 6 XX XX XX XX",
+      jobTitle: "Fonction",
+      jobTitlePlaceholder: "Agent de support client",
+      createButton: "Créer le compte",
+      credentialsTitle: "Compte créé avec succès",
+      credentialsWarning: "Enregistrez ces informations - elles ne seront plus affichées.",
+      credentialsCopy: "Copier dans le presse-papiers",
+      credentialsCopied: "Copié !",
+      credentialsClose: "J'ai enregistré les informations",
+      name: "Nom",
+      createAccountInfo: "Un mot de passe sécurisé sera automatiquement généré. Vous recevrez les identifiants une seule fois pour les partager avec le membre de l'équipe.",
     },
   };
 
@@ -173,6 +220,59 @@ export default function TeamPage() {
     }
   };
 
+  const handleCreateAccount = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!createAccountData.email || !createAccountData.full_name || !businessId) return;
+
+    setCreatingAccount(true);
+    try {
+      const response = await teamAPI.createAccount(businessId, createAccountData, userId);
+
+      // Refresh member list
+      const data = await teamAPI.list(businessId, userId);
+      setMembers(data.members || []);
+
+      // Show credentials modal
+      setCredentials({ email: response.email, password: response.password });
+      setShowCredentials(true);
+
+      // Reset form and close
+      setShowCreateAccountForm(false);
+      setCreateAccountData({
+        email: "",
+        full_name: "",
+        phone: "",
+        job_title: "",
+        role: "member",
+      });
+    } catch (err) {
+      console.error("Failed to create account:", err);
+      alert(err instanceof Error ? err.message : "Failed to create account");
+    } finally {
+      setCreatingAccount(false);
+    }
+  };
+
+  const handleCopyCredentials = async () => {
+    if (!credentials) return;
+
+    const text = `Email: ${credentials.email}\nPassword: ${credentials.password}`;
+    try {
+      await navigator.clipboard.writeText(text);
+      // Show brief feedback
+      const btn = document.getElementById("copy-btn");
+      if (btn) {
+        const originalText = btn.textContent;
+        btn.textContent = translations[lang].credentialsCopied;
+        setTimeout(() => {
+          btn.textContent = originalText;
+        }, 2000);
+      }
+    } catch (err) {
+      console.error("Failed to copy:", err);
+    }
+  };
+
   const getRoleBadgeClass = (role: string) => {
     switch (role) {
       case "owner":
@@ -222,15 +322,26 @@ export default function TeamPage() {
               {text.title} - {businessName}
             </h1>
           </div>
-          <button
-            onClick={() => setShowInviteForm(true)}
-            className="btn-primary flex items-center gap-2"
-          >
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
-            </svg>
-            {text.invite}
-          </button>
+          <div className="flex gap-3">
+            <button
+              onClick={() => setShowInviteForm(true)}
+              className="btn-secondary flex items-center gap-2"
+            >
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+              </svg>
+              {text.invite}
+            </button>
+            <button
+              onClick={() => setShowCreateAccountForm(true)}
+              className="btn-primary flex items-center gap-2"
+            >
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+              </svg>
+              {text.createAccount}
+            </button>
+          </div>
         </div>
 
         {/* Invite Modal */}
@@ -286,6 +397,174 @@ export default function TeamPage() {
           </div>
         )}
 
+        {/* Create Account Modal */}
+        {showCreateAccountForm && (
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+            <div className="bg-white rounded-lg p-6 w-full max-w-md">
+              <h2 className="text-xl font-semibold mb-4">{text.createAccountTitle}</h2>
+              <form onSubmit={handleCreateAccount} className="space-y-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    {text.fullName} <span className="text-red-500">*</span>
+                  </label>
+                  <input
+                    type="text"
+                    value={createAccountData.full_name}
+                    onChange={(e) => setCreateAccountData({ ...createAccountData, full_name: e.target.value })}
+                    className="input"
+                    placeholder={text.fullNamePlaceholder}
+                    required
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    {text.email} <span className="text-red-500">*</span>
+                  </label>
+                  <input
+                    type="email"
+                    value={createAccountData.email}
+                    onChange={(e) => setCreateAccountData({ ...createAccountData, email: e.target.value })}
+                    className="input"
+                    placeholder="colleague@example.com"
+                    required
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    {text.phoneNumber}
+                  </label>
+                  <input
+                    type="tel"
+                    value={createAccountData.phone}
+                    onChange={(e) => setCreateAccountData({ ...createAccountData, phone: e.target.value })}
+                    className="input"
+                    placeholder={text.phonePlaceholder}
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    {text.jobTitle}
+                  </label>
+                  <input
+                    type="text"
+                    value={createAccountData.job_title}
+                    onChange={(e) => setCreateAccountData({ ...createAccountData, job_title: e.target.value })}
+                    className="input"
+                    placeholder={text.jobTitlePlaceholder}
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    {text.role}
+                  </label>
+                  <select
+                    value={createAccountData.role}
+                    onChange={(e) => setCreateAccountData({ ...createAccountData, role: e.target.value as "admin" | "member" })}
+                    className="input"
+                  >
+                    <option value="admin">{text.admin}</option>
+                    <option value="member">{text.member}</option>
+                  </select>
+                </div>
+                <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
+                  <div className="flex gap-2">
+                    <svg className="w-5 h-5 text-blue-600 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    <p className="text-sm text-blue-800">{text.createAccountInfo}</p>
+                  </div>
+                </div>
+                <div className="flex gap-3 pt-2">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setShowCreateAccountForm(false);
+                      setCreateAccountData({
+                        email: "",
+                        full_name: "",
+                        phone: "",
+                        job_title: "",
+                        role: "member",
+                      });
+                    }}
+                    className="btn-secondary flex-1"
+                  >
+                    {text.cancel}
+                  </button>
+                  <button
+                    type="submit"
+                    disabled={creatingAccount}
+                    className="btn-primary flex-1"
+                  >
+                    {creatingAccount ? "..." : text.createButton}
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        )}
+
+        {/* Credentials Modal */}
+        {showCredentials && credentials && (
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+            <div className="bg-white rounded-lg p-6 w-full max-w-md">
+              <div className="flex flex-col items-center mb-6">
+                <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mb-4">
+                  <svg className="w-10 h-10 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                </div>
+                <h2 className="text-xl font-semibold text-gray-900 mb-2">{text.credentialsTitle}</h2>
+                <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-3 w-full">
+                  <div className="flex gap-2">
+                    <svg className="w-5 h-5 text-yellow-600 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                    </svg>
+                    <p className="text-sm text-yellow-800 font-medium">{text.credentialsWarning}</p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="space-y-3 mb-6">
+                <div>
+                  <label className="block text-xs font-medium text-gray-500 mb-1">{text.email}</label>
+                  <div className="bg-gray-50 border border-gray-200 rounded px-3 py-2 font-mono text-sm">
+                    {credentials.email}
+                  </div>
+                </div>
+                <div>
+                  <label className="block text-xs font-medium text-gray-500 mb-1">Password</label>
+                  <div className="bg-gray-50 border border-gray-200 rounded px-3 py-2 font-mono text-sm break-all">
+                    {credentials.password}
+                  </div>
+                </div>
+              </div>
+
+              <div className="flex flex-col gap-3">
+                <button
+                  id="copy-btn"
+                  onClick={handleCopyCredentials}
+                  className="btn-secondary flex items-center justify-center gap-2"
+                >
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                  </svg>
+                  {text.credentialsCopy}
+                </button>
+                <button
+                  onClick={() => {
+                    setShowCredentials(false);
+                    setCredentials(null);
+                  }}
+                  className="btn-primary"
+                >
+                  {text.credentialsClose}
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
         {members.length === 0 ? (
           <div className="card text-center py-12">
             <div className="w-20 h-20 bg-primary-100 rounded-full flex items-center justify-center mx-auto mb-4">
@@ -305,7 +584,7 @@ export default function TeamPage() {
               <thead className="bg-gray-50 border-b">
                 <tr>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    {text.email}
+                    {text.name}
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                     {text.role}
@@ -323,9 +602,21 @@ export default function TeamPage() {
                   <tr key={member.id}>
                     <td className="px-6 py-4">
                       <div className="flex items-center gap-3">
-                        <Avatar src={member.avatar_url} name={member.email} size={40} />
-                        <div>
-                          <div className="text-sm text-gray-900">{member.email}</div>
+                        <Avatar
+                          src={member.avatar_url}
+                          name={member.full_name || member.email}
+                          size={40}
+                        />
+                        <div className="flex-1 min-w-0">
+                          <div className="text-sm font-medium text-gray-900">
+                            {member.full_name || member.email}
+                          </div>
+                          {member.full_name && (
+                            <div className="text-xs text-gray-500">{member.email}</div>
+                          )}
+                          {member.job_title && (
+                            <div className="text-xs text-gray-500 italic">{member.job_title}</div>
+                          )}
                           {editingAvatarId === member.id ? (
                             <div className="flex items-center gap-2 mt-1">
                               <input
