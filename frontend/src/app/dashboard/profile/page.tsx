@@ -8,7 +8,6 @@ import { teamAPI, businessAPI, type TeamMember } from "@/lib/api";
 import { Avatar } from "@/components/shared/Avatar";
 import { useLanguage, LanguageToggle } from "@/components/LanguageProvider";
 import { RavenIcon } from "@/components/shared/RavenIcon";
-import { ChatToggle } from "@/components/ChatToggle";
 
 const translations = {
   en: {
@@ -316,7 +315,6 @@ export default function ProfilePage() {
               <h1 className="text-xl font-bold text-gray-800">Raven</h1>
             </div>
             <div className="flex items-center gap-4">
-              <ChatToggle />
               <LanguageToggle />
               <button
                 onClick={handleSignOut}
