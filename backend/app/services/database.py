@@ -363,6 +363,50 @@ class DatabaseService:
         )
         return len(result.data) > 0 if result.data else False
 
+    def fix_unlinked_team_members(self) -> int:
+        """
+        One-time fix: Link team members to their auth users.
+
+        Finds all team_members with null user_id and matches them to auth.users by email.
+        Returns the number of records fixed.
+        """
+        # Get all team members with null user_id
+        unlinked = (
+            self.client.table("team_members")
+            .select("id, email")
+            .is_("user_id", "null")
+            .execute()
+        )
+
+        if not unlinked.data:
+            return 0
+
+        fixed_count = 0
+        for member in unlinked.data:
+            try:
+                # Look up user_id from auth.users by email
+                auth_user = (
+                    self.client.table("auth.users")
+                    .select("id")
+                    .eq("email", member["email"])
+                    .execute()
+                )
+
+                if auth_user.data and len(auth_user.data) > 0:
+                    user_id = auth_user.data[0]["id"]
+
+                    # Update team_members with the user_id
+                    self.client.table("team_members").update(
+                        {"user_id": user_id}
+                    ).eq("id", member["id"]).execute()
+
+                    fixed_count += 1
+            except Exception as e:
+                print(f"Failed to link {member['email']}: {str(e)}")
+                continue
+
+        return fixed_count
+
     def update_conversation_visitor_info(
         self,
         conversation_id: str,

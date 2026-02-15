@@ -236,3 +236,24 @@ async def remove_team_member(business_id: str, member_id: str):
         raise HTTPException(status_code=404, detail="Team member not found")
 
     return {"message": "Team member removed successfully"}
+
+
+@router.post("/fix-unlinked-members")
+async def fix_unlinked_members():
+    """
+    One-time fix: Link team members to their auth users.
+
+    Finds all team_members with null user_id and matches them to auth.users by email.
+    This fixes accounts created before the user_id linking system was implemented.
+    """
+    try:
+        fixed_count = db.fix_unlinked_team_members()
+        return {
+            "message": f"Successfully linked {fixed_count} team member(s)",
+            "count": fixed_count
+        }
+    except Exception as e:
+        raise HTTPException(
+            status_code=500,
+            detail=f"Failed to fix unlinked members: {str(e)}"
+        )
