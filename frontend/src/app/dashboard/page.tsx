@@ -46,18 +46,32 @@ export default function DashboardPage() {
 
         // If user has no businesses, check if they're a team member
         if (data.length === 0) {
+          console.log("🔍 No businesses found, checking if user is a team member...");
+          console.log("User ID:", session.user.id);
+
           try {
+            console.log("📡 Calling teamAPI.getCurrentMember...");
             const { member } = await teamAPI.getCurrentMember(session.user.id);
+            console.log("✅ Team member found:", member);
+
             // User is a team member - load their business info
             setIsTeamMember(true);
             setTeamMemberRole(member.role);
 
             // Fetch business details
+            console.log("📡 Fetching business details for business_id:", member.business_id);
             const business = await businessAPI.get(member.business_id, session.user.id);
+            console.log("✅ Business loaded:", business);
             setTeamMemberBusiness(business);
           } catch (err) {
             // User is neither a business owner nor a team member
             // Show the "Set Up My Business" page
+            console.error("❌ Team member check failed:", err);
+            console.error("Error details:", {
+              message: err instanceof Error ? err.message : "Unknown error",
+              response: (err as any)?.response,
+              status: (err as any)?.status
+            });
             console.log("User is not a team member, showing setup page");
           }
         }
