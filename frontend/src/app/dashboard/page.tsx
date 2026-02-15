@@ -18,7 +18,13 @@ export default function DashboardPage() {
   const [businesses, setBusinesses] = useState<Business[]>([]);
   const [loading, setLoading] = useState(true);
   const [userEmail, setUserEmail] = useState("");
+  const [userName, setUserName] = useState<string | null>(null);
   const [deletingId, setDeletingId] = useState<string | null>(null);
+
+  // Team member state
+  const [isTeamMember, setIsTeamMember] = useState(false);
+  const [teamMemberBusiness, setTeamMemberBusiness] = useState<Business | null>(null);
+  const [teamMemberRole, setTeamMemberRole] = useState<string>("");
 
   useEffect(() => {
     const checkAuthAndLoadData = async () => {
@@ -32,6 +38,7 @@ export default function DashboardPage() {
       }
 
       setUserEmail(session.user.email || "");
+      setUserName(session.user.user_metadata?.full_name || null);
 
       try {
         const data = await businessAPI.list(session.user.id);
@@ -41,9 +48,13 @@ export default function DashboardPage() {
         if (data.length === 0) {
           try {
             const { member } = await teamAPI.getCurrentMember(session.user.id);
-            // User is a team member - redirect to live conversations for their business
-            router.push(`/dashboard/live?id=${member.business_id}`);
-            return;
+            // User is a team member - load their business info
+            setIsTeamMember(true);
+            setTeamMemberRole(member.role);
+
+            // Fetch business details
+            const business = await businessAPI.get(member.business_id, session.user.id);
+            setTeamMemberBusiness(business);
           } catch (err) {
             // User is neither a business owner nor a team member
             // Show the "Set Up My Business" page
@@ -102,6 +113,227 @@ export default function DashboardPage() {
     );
   }
 
+  // Team Member Dashboard View
+  if (isTeamMember && teamMemberBusiness) {
+    const business = teamMemberBusiness;
+    return (
+      <div className="min-h-screen bg-gray-50">
+        {/* Header */}
+        <header className="bg-white border-b">
+          <div className="container mx-auto px-4 py-4 flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <RavenIcon size={40} className="text-primary-500" />
+              <span className="text-xl font-bold text-gray-900">Raven</span>
+            </div>
+
+            <div className="flex items-center gap-4">
+              <ChatToggle businessId={business.id} apiUrl={API_URL} />
+              <LanguageToggle />
+              <ProfileMenu userEmail={userEmail} userName={userName} lang={lang} />
+            </div>
+          </div>
+        </header>
+
+        {/* Main Content */}
+        <main className="container mx-auto px-4 py-8">
+          <div className="mb-8">
+            <div className="flex items-center gap-2 mb-2">
+              <h1 className="text-3xl font-bold text-gray-900">{business.name}</h1>
+              <span className={`px-2 py-1 text-xs rounded-full ${
+                teamMemberRole === 'admin' ? 'bg-blue-100 text-blue-700' : 'bg-gray-100 text-gray-700'
+              }`}>
+                {teamMemberRole === 'admin'
+                  ? (lang === 'fr' ? 'Administrateur' : 'Admin')
+                  : (lang === 'fr' ? 'Membre' : 'Member')}
+              </span>
+            </div>
+            <p className="text-gray-600">{business.description}</p>
+          </div>
+
+          {/* Quick Access Cards */}
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {/* Live Conversations */}
+            <Link href={`/dashboard/live?id=${business.id}`} className="card hover:shadow-lg transition-shadow cursor-pointer">
+              <div className="flex items-start gap-4">
+                <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                  <svg className="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+                  </svg>
+                </div>
+                <div className="flex-1 min-w-0">
+                  <h3 className="text-lg font-semibold text-gray-900 mb-1">
+                    {lang === 'fr' ? 'Conversations en direct' : 'Live Conversations'}
+                  </h3>
+                  <p className="text-sm text-gray-600">
+                    {lang === 'fr' ? 'Gérer les conversations en temps réel' : 'Manage real-time conversations'}
+                  </p>
+                </div>
+              </div>
+            </Link>
+
+            {/* Appointments */}
+            <Link href={`/dashboard/appointments?id=${business.id}`} className="card hover:shadow-lg transition-shadow cursor-pointer">
+              <div className="flex items-start gap-4">
+                <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                  <svg className="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                  </svg>
+                </div>
+                <div className="flex-1 min-w-0">
+                  <h3 className="text-lg font-semibold text-gray-900 mb-1">
+                    {lang === 'fr' ? 'Rendez-vous' : 'Appointments'}
+                  </h3>
+                  <p className="text-sm text-gray-600">
+                    {lang === 'fr' ? 'Voir et gérer les rendez-vous' : 'View and manage appointments'}
+                  </p>
+                </div>
+              </div>
+            </Link>
+
+            {/* Analytics */}
+            <Link href={`/dashboard/analytics?id=${business.id}`} className="card hover:shadow-lg transition-shadow cursor-pointer">
+              <div className="flex items-start gap-4">
+                <div className="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                  <svg className="w-6 h-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                  </svg>
+                </div>
+                <div className="flex-1 min-w-0">
+                  <h3 className="text-lg font-semibold text-gray-900 mb-1">
+                    {lang === 'fr' ? 'Analyses' : 'Analytics'}
+                  </h3>
+                  <p className="text-sm text-gray-600">
+                    {lang === 'fr' ? 'Statistiques et rapports' : 'Statistics and reports'}
+                  </p>
+                </div>
+              </div>
+            </Link>
+
+            {/* Conversations History */}
+            <Link href={`/dashboard/conversations?id=${business.id}`} className="card hover:shadow-lg transition-shadow cursor-pointer">
+              <div className="flex items-start gap-4">
+                <div className="w-12 h-12 bg-indigo-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                  <svg className="w-6 h-6 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8h2a2 2 0 012 2v6a2 2 0 01-2 2h-2v4l-4-4H9a1.994 1.994 0 01-1.414-.586m0 0L11 14h4a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2v4l.586-.586z" />
+                  </svg>
+                </div>
+                <div className="flex-1 min-w-0">
+                  <h3 className="text-lg font-semibold text-gray-900 mb-1">
+                    {lang === 'fr' ? 'Historique' : 'Conversations'}
+                  </h3>
+                  <p className="text-sm text-gray-600">
+                    {lang === 'fr' ? 'Voir toutes les conversations' : 'View all conversations'}
+                  </p>
+                </div>
+              </div>
+            </Link>
+
+            {/* Team */}
+            <Link href={`/dashboard/team?id=${business.id}`} className="card hover:shadow-lg transition-shadow cursor-pointer">
+              <div className="flex items-start gap-4">
+                <div className="w-12 h-12 bg-yellow-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                  <svg className="w-6 h-6 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                  </svg>
+                </div>
+                <div className="flex-1 min-w-0">
+                  <h3 className="text-lg font-semibold text-gray-900 mb-1">
+                    {lang === 'fr' ? 'Équipe' : 'Team'}
+                  </h3>
+                  <p className="text-sm text-gray-600">
+                    {lang === 'fr' ? 'Voir les membres de l\'équipe' : 'View team members'}
+                  </p>
+                </div>
+              </div>
+            </Link>
+
+            {/* Availability */}
+            <Link href={`/dashboard/availability?id=${business.id}`} className="card hover:shadow-lg transition-shadow cursor-pointer">
+              <div className="flex items-start gap-4">
+                <div className="w-12 h-12 bg-pink-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                  <svg className="w-6 h-6 text-pink-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                </div>
+                <div className="flex-1 min-w-0">
+                  <h3 className="text-lg font-semibold text-gray-900 mb-1">
+                    {lang === 'fr' ? 'Disponibilités' : 'Availability'}
+                  </h3>
+                  <p className="text-sm text-gray-600">
+                    {lang === 'fr' ? 'Gérer les horaires' : 'Manage schedules'}
+                  </p>
+                </div>
+              </div>
+            </Link>
+
+            {/* Notifications */}
+            <Link href={`/dashboard/notifications?id=${business.id}`} className="card hover:shadow-lg transition-shadow cursor-pointer">
+              <div className="flex items-start gap-4">
+                <div className="w-12 h-12 bg-red-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                  <svg className="w-6 h-6 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+                  </svg>
+                </div>
+                <div className="flex-1 min-w-0">
+                  <h3 className="text-lg font-semibold text-gray-900 mb-1">
+                    {lang === 'fr' ? 'Notifications' : 'Notifications'}
+                  </h3>
+                  <p className="text-sm text-gray-600">
+                    {lang === 'fr' ? 'Paramètres de notification' : 'Notification settings'}
+                  </p>
+                </div>
+              </div>
+            </Link>
+
+            {/* Widget (Admin/Owner only) */}
+            {teamMemberRole === 'admin' && (
+              <Link href={`/dashboard/widget?id=${business.id}`} className="card hover:shadow-lg transition-shadow cursor-pointer">
+                <div className="flex items-start gap-4">
+                  <div className="w-12 h-12 bg-teal-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                    <svg className="w-6 h-6 text-teal-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
+                    </svg>
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <h3 className="text-lg font-semibold text-gray-900 mb-1">
+                      Widget
+                    </h3>
+                    <p className="text-sm text-gray-600">
+                      {lang === 'fr' ? 'Code d\'intégration' : 'Integration code'}
+                    </p>
+                  </div>
+                </div>
+              </Link>
+            )}
+
+            {/* Business Settings (Admin only) */}
+            {teamMemberRole === 'admin' && (
+              <Link href={`/dashboard/setup?id=${business.id}`} className="card hover:shadow-lg transition-shadow cursor-pointer">
+                <div className="flex items-start gap-4">
+                  <div className="w-12 h-12 bg-gray-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                    <svg className="w-6 h-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                    </svg>
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <h3 className="text-lg font-semibold text-gray-900 mb-1">
+                      {lang === 'fr' ? 'Paramètres' : 'Settings'}
+                    </h3>
+                    <p className="text-sm text-gray-600">
+                      {lang === 'fr' ? 'Configuration de l\'entreprise' : 'Business configuration'}
+                    </p>
+                  </div>
+                </div>
+              </Link>
+            )}
+          </div>
+        </main>
+      </div>
+    );
+  }
+
+  // Business Owner Dashboard View
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
@@ -122,7 +354,7 @@ export default function DashboardPage() {
                 Admin
               </span>
             )}
-            <ProfileMenu userEmail={userEmail} lang={lang} />
+            <ProfileMenu userEmail={userEmail} userName={userName} lang={lang} />
           </div>
         </div>
       </header>
