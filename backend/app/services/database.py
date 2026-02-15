@@ -381,26 +381,30 @@ class DatabaseService:
         if not unlinked.data:
             return 0
 
+        # Get all auth users via Admin API
+        try:
+            auth_users_response = self.client.auth.admin.list_users()
+            auth_users = {user.email: user.id for user in auth_users_response}
+        except Exception as e:
+            print(f"Failed to list auth users: {str(e)}")
+            return 0
+
         fixed_count = 0
         for member in unlinked.data:
             try:
-                # Look up user_id from auth.users by email
-                auth_user = (
-                    self.client.table("auth.users")
-                    .select("id")
-                    .eq("email", member["email"])
-                    .execute()
-                )
+                # Look up user_id by email
+                user_id = auth_users.get(member["email"])
 
-                if auth_user.data and len(auth_user.data) > 0:
-                    user_id = auth_user.data[0]["id"]
-
+                if user_id:
                     # Update team_members with the user_id
                     self.client.table("team_members").update(
                         {"user_id": user_id}
                     ).eq("id", member["id"]).execute()
 
+                    print(f"✓ Linked {member['email']} to user_id {user_id}")
                     fixed_count += 1
+                else:
+                    print(f"✗ No auth user found for {member['email']}")
             except Exception as e:
                 print(f"Failed to link {member['email']}: {str(e)}")
                 continue
