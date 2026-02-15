@@ -20,6 +20,7 @@ class TeamMemberInvite(BaseModel):
 
 class TeamMemberUpdate(BaseModel):
     role: Optional[str] = None
+    avatar_url: Optional[str] = None
 
 
 @router.get("/{business_id}/members")
@@ -65,9 +66,9 @@ async def invite_team_member(business_id: str, invite: TeamMemberInvite):
 @router.patch("/{business_id}/members/{member_id}")
 async def update_team_member(business_id: str, member_id: str, update: TeamMemberUpdate):
     """
-    Update a team member's role.
+    Update a team member's role and/or avatar.
     """
-    member = db.update_team_member(member_id, role=update.role)
+    member = db.update_team_member(member_id, role=update.role, avatar_url=update.avatar_url)
     if not member:
         raise HTTPException(status_code=404, detail="Team member not found")
 

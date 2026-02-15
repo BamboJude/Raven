@@ -7,6 +7,7 @@ import { supabase } from "@/lib/supabase";
 import { businessAPI, liveAPI, type LiveConversation, type Message } from "@/lib/api";
 import { useLanguage } from "@/components/LanguageProvider";
 import { RavenIcon } from "@/components/shared/RavenIcon";
+import { Avatar } from "@/components/shared/Avatar";
 
 export default function LiveConversationsPage() {
   const router = useRouter();
@@ -245,9 +246,18 @@ export default function LiveConversationsPage() {
                   }`}
                 >
                   <div className="flex items-center justify-between mb-1">
-                    <span className="font-medium text-gray-900 text-sm">
-                      {lang === "fr" ? "Visiteur" : "Visitor"} {convo.visitor_id.slice(0, 8)}...
-                    </span>
+                    <div className="flex items-center gap-2">
+                      {convo.is_human_takeover && convo.team_member && (
+                        <Avatar
+                          src={convo.team_member.avatar_url}
+                          name={convo.team_member.email}
+                          size={24}
+                        />
+                      )}
+                      <span className="font-medium text-gray-900 text-sm">
+                        {lang === "fr" ? "Visiteur" : "Visitor"} {convo.visitor_id.slice(0, 8)}...
+                      </span>
+                    </div>
                     <div className="flex items-center gap-2">
                       {convo.is_human_takeover && (
                         <span className="px-2 py-0.5 text-xs rounded-full bg-orange-100 text-orange-700">
@@ -292,6 +302,18 @@ export default function LiveConversationsPage() {
                     <div className="flex items-center gap-2">
                       {selectedConversation.is_human_takeover ? (
                         <>
+                          {selectedConversation.team_member && (
+                            <div className="flex items-center gap-2">
+                              <Avatar
+                                src={selectedConversation.team_member.avatar_url}
+                                name={selectedConversation.team_member.email}
+                                size={32}
+                              />
+                              <span className="text-sm text-gray-700">
+                                {selectedConversation.team_member.email.split('@')[0]}
+                              </span>
+                            </div>
+                          )}
                           <span className="px-3 py-1 text-sm rounded-full bg-orange-100 text-orange-700 flex items-center gap-1">
                             <span className="w-2 h-2 bg-orange-500 rounded-full"></span>
                             {lang === "fr" ? "Vous contrôlez" : "You're in control"}

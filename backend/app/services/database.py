@@ -137,7 +137,7 @@ class DatabaseService:
         cutoff = (datetime.now(timezone.utc) - timedelta(hours=24)).isoformat()
         result = (
             self.client.table("conversations")
-            .select("*")
+            .select("*, team_member:team_members!taken_over_by(email, avatar_url)")
             .eq("business_id", business_id)
             .gte("last_message_at", cutoff)
             .order("last_message_at", desc=True)
@@ -150,7 +150,7 @@ class DatabaseService:
         """Get a conversation with its messages for live view."""
         result = (
             self.client.table("conversations")
-            .select("*")
+            .select("*, team_member:team_members!taken_over_by(email, avatar_url)")
             .eq("id", conversation_id)
             .execute()
         )
@@ -286,11 +286,13 @@ class DatabaseService:
         }).execute()
         return result.data[0] if result.data else None
 
-    def update_team_member(self, member_id: str, role: str = None) -> Optional[dict]:
-        """Update a team member's role."""
+    def update_team_member(self, member_id: str, role: str = None, avatar_url: str = None) -> Optional[dict]:
+        """Update a team member's role and/or avatar."""
         updates = {}
         if role:
             updates["role"] = role
+        if avatar_url is not None:  # Allow empty string to clear avatar
+            updates["avatar_url"] = avatar_url
         if not updates:
             return None
         result = (

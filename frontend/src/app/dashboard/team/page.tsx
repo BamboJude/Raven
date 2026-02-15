@@ -7,6 +7,7 @@ import { supabase } from "@/lib/supabase";
 import { businessAPI, teamAPI, type TeamMember } from "@/lib/api";
 import { useLanguage, LanguageToggle } from "@/components/LanguageProvider";
 import { RavenIcon } from "@/components/shared/RavenIcon";
+import { Avatar } from "@/components/shared/Avatar";
 
 export default function TeamPage() {
   const router = useRouter();
@@ -24,6 +25,11 @@ export default function TeamPage() {
   const [inviteEmail, setInviteEmail] = useState("");
   const [inviteRole, setInviteRole] = useState<"admin" | "member">("member");
   const [inviting, setInviting] = useState(false);
+
+  // Avatar change
+  const [editingAvatarId, setEditingAvatarId] = useState<string | null>(null);
+  const [newAvatarUrl, setNewAvatarUrl] = useState("");
+  const [updatingAvatar, setUpdatingAvatar] = useState(false);
 
   const translations = {
     en: {
@@ -46,6 +52,11 @@ export default function TeamPage() {
       confirmRemove: "Are you sure you want to remove this team member?",
       inviteSuccess: "Invite sent successfully",
       removeSuccess: "Team member removed",
+      changeAvatar: "Change Avatar",
+      avatarUrl: "Avatar URL",
+      avatarPlaceholder: "https://example.com/avatar.jpg",
+      updateAvatar: "Update",
+      avatarSuccess: "Avatar updated",
     },
     fr: {
       title: "Membres de l'équipe",
@@ -67,6 +78,11 @@ export default function TeamPage() {
       confirmRemove: "Voulez-vous vraiment supprimer ce membre ?",
       inviteSuccess: "Invitation envoyée",
       removeSuccess: "Membre supprimé",
+      changeAvatar: "Changer l'avatar",
+      avatarUrl: "URL de l'avatar",
+      avatarPlaceholder: "https://exemple.com/avatar.jpg",
+      updateAvatar: "Mettre à jour",
+      avatarSuccess: "Avatar mis à jour",
     },
   };
 
@@ -135,6 +151,25 @@ export default function TeamPage() {
     } catch (err) {
       console.error("Failed to remove:", err);
       alert(err instanceof Error ? err.message : "Failed to remove member");
+    }
+  };
+
+  const handleUpdateAvatar = async (memberId: string) => {
+    if (!businessId) return;
+
+    setUpdatingAvatar(true);
+    try {
+      await teamAPI.update(businessId, memberId, { avatar_url: newAvatarUrl }, userId);
+      const data = await teamAPI.list(businessId, userId);
+      setMembers(data.members || []);
+      setEditingAvatarId(null);
+      setNewAvatarUrl("");
+      alert(text.avatarSuccess);
+    } catch (err) {
+      console.error("Failed to update avatar:", err);
+      alert(err instanceof Error ? err.message : "Failed to update avatar");
+    } finally {
+      setUpdatingAvatar(false);
     }
   };
 
@@ -286,8 +321,50 @@ export default function TeamPage() {
               <tbody className="divide-y divide-gray-200">
                 {members.map((member) => (
                   <tr key={member.id}>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <span className="text-sm text-gray-900">{member.email}</span>
+                    <td className="px-6 py-4">
+                      <div className="flex items-center gap-3">
+                        <Avatar src={member.avatar_url} name={member.email} size={40} />
+                        <div>
+                          <div className="text-sm text-gray-900">{member.email}</div>
+                          {editingAvatarId === member.id ? (
+                            <div className="flex items-center gap-2 mt-1">
+                              <input
+                                type="url"
+                                value={newAvatarUrl}
+                                onChange={(e) => setNewAvatarUrl(e.target.value)}
+                                placeholder={text.avatarPlaceholder}
+                                className="text-xs px-2 py-1 border rounded w-64"
+                              />
+                              <button
+                                onClick={() => handleUpdateAvatar(member.id)}
+                                disabled={updatingAvatar}
+                                className="text-xs text-blue-600 hover:text-blue-800"
+                              >
+                                {updatingAvatar ? "..." : text.updateAvatar}
+                              </button>
+                              <button
+                                onClick={() => {
+                                  setEditingAvatarId(null);
+                                  setNewAvatarUrl("");
+                                }}
+                                className="text-xs text-gray-600 hover:text-gray-800"
+                              >
+                                {text.cancel}
+                              </button>
+                            </div>
+                          ) : (
+                            <button
+                              onClick={() => {
+                                setEditingAvatarId(member.id);
+                                setNewAvatarUrl(member.avatar_url || "");
+                              }}
+                              className="text-xs text-blue-600 hover:text-blue-800 mt-1"
+                            >
+                              {text.changeAvatar}
+                            </button>
+                          )}
+                        </div>
+                      </div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <span className={`px-2 py-1 text-xs rounded-full ${getRoleBadgeClass(member.role)}`}>

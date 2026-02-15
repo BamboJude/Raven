@@ -177,6 +177,7 @@ export interface TeamMember {
   role: "owner" | "admin" | "member";
   status: "pending" | "active";
   user_id?: string;
+  avatar_url?: string;
   created_at: string;
   updated_at: string;
 }
@@ -192,7 +193,7 @@ export const teamAPI = {
       body: JSON.stringify(data),
     }, token),
 
-  update: (businessId: string, memberId: string, data: { role: string }, token: string) =>
+  update: (businessId: string, memberId: string, data: { role?: string; avatar_url?: string }, token: string) =>
     fetchAPI(`/api/team/${businessId}/members/${memberId}`, {
       method: "PATCH",
       body: JSON.stringify(data),
@@ -482,6 +483,10 @@ export interface LiveConversation extends Conversation {
   is_human_takeover?: boolean;
   taken_over_by?: string;
   taken_over_at?: string;
+  team_member?: {
+    email: string;
+    avatar_url?: string;
+  };
   last_message?: string;
   last_message_role?: string;
   message_count?: number;
