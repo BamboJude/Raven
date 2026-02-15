@@ -81,8 +81,15 @@ async def get_business(business_id: str, authorization: Optional[str] = Header(N
     if not business:
         raise HTTPException(status_code=404, detail="Business not found")
 
-    # Verify ownership (admin bypasses)
-    if business["user_id"] != user_id and not is_platform_admin(user_id):
+    # Verify ownership OR team membership (admin bypasses)
+    is_owner = business["user_id"] == user_id
+    is_admin = is_platform_admin(user_id)
+
+    # Check if user is a team member of this business
+    team_member = db.get_team_member_by_user_id(user_id)
+    is_team_member = team_member and team_member.get("business_id") == business_id
+
+    if not (is_owner or is_admin or is_team_member):
         raise HTTPException(status_code=403, detail="Not authorized to access this business")
 
     # Get config
