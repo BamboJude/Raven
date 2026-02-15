@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { supabase } from "@/lib/supabase";
-import { businessAPI, type Business } from "@/lib/api";
+import { businessAPI, teamAPI, type Business } from "@/lib/api";
 import { useLanguage, LanguageToggle } from "@/components/LanguageProvider";
 import { ChatToggle } from "@/components/ChatToggle";
 import { RavenIcon } from "@/components/shared/RavenIcon";
@@ -36,6 +36,20 @@ export default function DashboardPage() {
       try {
         const data = await businessAPI.list(session.user.id);
         setBusinesses(data);
+
+        // If user has no businesses, check if they're a team member
+        if (data.length === 0) {
+          try {
+            const { member } = await teamAPI.getCurrentMember(session.user.id);
+            // User is a team member - redirect to live conversations for their business
+            router.push(`/dashboard/live?id=${member.business_id}`);
+            return;
+          } catch (err) {
+            // User is neither a business owner nor a team member
+            // Show the "Set Up My Business" page
+            console.log("User is not a team member, showing setup page");
+          }
+        }
       } catch (err) {
         console.error("Failed to load businesses:", err);
       } finally {
