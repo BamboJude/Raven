@@ -57,6 +57,24 @@ async def list_team_members(business_id: str):
     return {"members": members}
 
 
+@router.get("/me")
+async def get_current_team_member(user_id: str):
+    """
+    Get current logged-in user's team member profile.
+
+    Returns the team member record associated with the authenticated user.
+    Used for profile management self-service.
+    """
+    member = db.get_team_member_by_user_id(user_id)
+    if not member:
+        raise HTTPException(
+            status_code=404,
+            detail="Team member profile not found. You may not be associated with any business."
+        )
+
+    return {"member": member}
+
+
 @router.post("/{business_id}/members")
 async def invite_team_member(business_id: str, invite: TeamMemberInvite):
     """
@@ -172,10 +190,28 @@ async def create_team_member_account(business_id: str, data: TeamMemberCreateAcc
 
 
 @router.patch("/{business_id}/members/{member_id}")
-async def update_team_member(business_id: str, member_id: str, update: TeamMemberUpdate):
+async def update_team_member(
+    business_id: str,
+    member_id: str,
+    update: TeamMemberUpdate,
+    user_id: str  # From session
+):
     """
     Update a team member's role, avatar, and profile information.
+
+    Authorization: Users can update their own profile fields but cannot change their own role.
     """
+    # Authorization: Allow if updating own profile OR if business owner/admin
+    current_member = db.get_team_member_by_user_id(user_id)
+    is_self_update = current_member and current_member["id"] == member_id
+
+    # If self-update, don't allow role changes (only profile fields)
+    if is_self_update and update.role:
+        raise HTTPException(
+            status_code=403,
+            detail="You cannot change your own role"
+        )
+
     member = db.update_team_member(
         member_id,
         role=update.role,

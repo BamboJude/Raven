@@ -205,6 +205,9 @@ export const teamAPI = {
   list: (businessId: string, token: string): Promise<{ members: TeamMember[] }> =>
     fetchAPI(`/api/team/${businessId}/members`, {}, token),
 
+  getCurrentMember: (token: string): Promise<{ member: TeamMember }> =>
+    fetchAPI(`/api/team/me?user_id=${token}`, {}, token),
+
   invite: (businessId: string, data: { email: string; role: string }, token: string) =>
     fetchAPI(`/api/team/${businessId}/members`, {
       method: "POST",

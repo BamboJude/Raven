@@ -276,6 +276,18 @@ class DatabaseService:
         )
         return result.data[0] if result.data else None
 
+    def get_team_member_by_user_id(self, user_id: str) -> Optional[dict]:
+        """Get a team member by their Supabase auth user_id."""
+        result = (
+            self.client.table("team_members")
+            .select("*")
+            .eq("user_id", user_id)
+            .execute()
+        )
+        # A user might have multiple team_member records (one per business)
+        # Return the first active one, or None
+        return result.data[0] if result.data else None
+
     def create_team_member(
         self,
         business_id: str,

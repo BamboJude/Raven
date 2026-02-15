@@ -8,6 +8,7 @@ import { businessAPI, type Business } from "@/lib/api";
 import { useLanguage, LanguageToggle } from "@/components/LanguageProvider";
 import { ChatToggle } from "@/components/ChatToggle";
 import { RavenIcon } from "@/components/shared/RavenIcon";
+import { ProfileMenu } from "@/components/shared/ProfileMenu";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
 
@@ -102,17 +103,12 @@ export default function DashboardPage() {
               <ChatToggle businessId={businesses.find(b => !b.is_system)!.id} apiUrl={API_URL} />
             )}
             <LanguageToggle />
-            <span className="text-sm text-gray-600">
-              {userEmail}
-              {isAdmin && (
-                <span className="ml-2 px-2 py-0.5 text-xs bg-red-100 text-red-700 rounded-full font-medium">
-                  Admin
-                </span>
-              )}
-            </span>
-            <button onClick={handleSignOut} className="btn-secondary text-sm">
-              {t.nav.logout}
-            </button>
+            {isAdmin && (
+              <span className="px-2 py-0.5 text-xs bg-red-100 text-red-700 rounded-full font-medium">
+                Admin
+              </span>
+            )}
+            <ProfileMenu userEmail={userEmail} lang={lang} />
           </div>
         </div>
       </header>
